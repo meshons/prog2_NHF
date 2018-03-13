@@ -32,6 +32,9 @@ class String
     String(const char *);
     String(Iterator, Iterator);
     ~String();
+    String& operator=(const String&);
+    String& operator=(const char *);
+    String& operator=(char);
 
     Iterator begin();
     const Iterator begin() const;

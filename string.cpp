@@ -102,48 +102,123 @@ String::~String()
     }
 }
 
-It String::begin(){
+String& String::operator=(const String & s){
+    clear();
+    Cell *tmp, *c, *prev = NULL;
+    if (s.first != NULL)
+    {
+        first = new Cell();
+        tmp = first;
+        copy(tmp->data, s.first->data);
+        tmp->prev = NULL;
+        tmp->next = NULL;
+        prev = tmp;
+        for (c = s.first->next; c != NULL; c = c->next)
+        {
+            tmp->next = new Cell();
+            tmp = tmp->next;
+            copy(tmp->data, c->data);
+            tmp->prev = prev;
+            tmp->next = NULL;
+        }
+    }
+    else
+        first = NULL;
+    return *this;
+}
+String& String::operator=(const char * str){
+    clear();
+    Cell *tmp = first, *prev = NULL;
+    unsigned int x = 0;
+    while (str[x])
+    {
+        if (x % 20 == 0)
+        {
+            if (!x)
+            {
+                first = new Cell();
+                tmp = first;
+            }
+            else
+            {
+                prev = tmp;
+                tmp->next = new Cell();
+                tmp = tmp->next;
+            }
+            tmp->prev = prev;
+            tmp->next = NULL;
+        }
+        tmp->data[x % 20] = str[x];
+        x++;
+    }
+    return *this;
+}
+String& String::operator=(char c){
+    clear();
+    first = new Cell();
+    first->prev=NULL;
+    first->next=NULL;
+    first->data[0]=c;
+    first->data[1]=0;
+    return *this;
+}
+
+It String::begin()
+{
     return It(first);
 }
-const It String::begin() const{
+const It String::begin() const
+{
     return It(first);
 }
-It String::end(){
+It String::end()
+{
     It a(first);
-    while(*a!=0)a++;
+    while (*a != 0)
+        a++;
     return a;
 }
-const It String::end() const{
+const It String::end() const
+{
     It a(first);
-    while(*a!=0)a++;
+    while (*a != 0)
+        a++;
     return a;
 }
 
-size_t String::size() const{
+size_t String::size() const
+{
     size_t sum = 0;
-    for(Cell *tmp=first;tmp!=NULL;tmp=tmp->next){
+    for (Cell *tmp = first; tmp != NULL; tmp = tmp->next)
+    {
         int x = 0;
-        while(tmp->data[x] && x<20)x++;
-        sum+=x;
+        while (tmp->data[x] && x < 20)
+            x++;
+        sum += x;
     }
     return sum;
 }
-size_t String::length() const{    
+size_t String::length() const
+{
     size_t sum = 0;
-    for(Cell *tmp=first;tmp!=NULL;tmp=tmp->next){
+    for (Cell *tmp = first; tmp != NULL; tmp = tmp->next)
+    {
         int x = 0;
-        while(tmp->data[x] && x<20)x++;
-        sum+=x;
+        while (tmp->data[x] && x < 20)
+            x++;
+        sum += x;
     }
     return sum;
 }
-size_t String::capacity() const{
+size_t String::capacity() const
+{
     size_t sum = 0;
-    for(Cell *tmp=first;tmp!=NULL;tmp=tmp->next)
+    for (Cell *tmp = first; tmp != NULL; tmp = tmp->next)
         sum++;
-    return sum*20;  
+    return sum * 20;
 }
-void String::clear(){
+void String::clear()
+{
     Cell *tmp = first;
     while (first != NULL)
     {
@@ -153,10 +228,10 @@ void String::clear(){
     }
     first = NULL;
 }
-bool String::empty() const{
-    return length()==0;
+bool String::empty() const
+{
+    return length() == 0;
 }
-
 
 It::Iterator(const It &i) : cell(i.cell)
 {
@@ -184,11 +259,12 @@ It &It::operator++()
     }
     else if (num == 20)
     {
-        if(cell->next==NULL)
+        if (cell->next == NULL)
             throw "túl az utolsó utánin";
-        else{
+        else
+        {
             cell = cell->next;
-            num=0;
+            num = 0;
         }
     }
     else
