@@ -7,46 +7,54 @@
 
 #include <new>
 
-namespace NHF{
-    template <typename T>
-    class basic_string{
-        struct Cell;
-        Cell * data;
-    public:
-        class Iterator;
-    private:
-        struct cell{
-            T data[20];
-            Cell * next;
-            Cell * prev;
-        };
-    public:
-        basic_string();
+namespace NHF
+{
+class basic_string
+{
+    struct Cell;
+    Cell *data;
 
+  public:
+    class Iterator;
 
-    public:
-        class Iterator{
-            Cell * cell;
-            unsigned char num;
-        public:
-            Iterator(Cell * c, unsigned char num=0):cell(c),num(num){
-            }
-            Iterator(const Iterator&);
-            ~Iterator(){}
-            Iterator& operator=(const Iterator&);
-            Iterator& operator++();
-            Iterator operator++(int);
-            T& operator*() const;
-            //T& operator[](unsigned int);
-
-        };
+  private:
+    struct Cell
+    {
+        char data[20];
+        Cell *next;
+        Cell *prev;
     };
 
-    typedef basic_string<char> string;
-    typedef basic_string<unsigned char> ustring;
-    typedef basic_string<unsigned short> unistring;
+  public:
+    basic_string();
+    basic_string(basic_string &);
+    basic_string(const char *);
+    basic_string(Iterator s, Iterator e);
 
+    char &operator[](unsigned int);
+    char &at(unsigned int);
+
+    //basic_string& operator+=(const char *);
+
+  public:
+    class Iterator
+    {
+        Cell *cell, *last_cell;
+        unsigned char num, last_num;
+
+      public:
+        Iterator(Cell *c, unsigned char num = 0) : cell(c), num(num)
+        {
+        }
+        Iterator(const Iterator &);
+        ~Iterator() {}
+        Iterator &operator=(const Iterator &);
+        Iterator &operator++();
+        Iterator operator++(int);
+        char &operator*() const;
+        //T& operator[](unsigned int);
+    };
+};
 }
-
 
 #endif
