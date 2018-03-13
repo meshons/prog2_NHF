@@ -5,14 +5,15 @@
 #define NULL 0
 #endif
 
+#include <cstdlib> //size_t
 #include <new>
 
 namespace NHF
 {
-class basic_string
+class String
 {
     struct Cell;
-    Cell *data;
+    Cell *first;
 
   public:
     class Iterator;
@@ -26,10 +27,25 @@ class basic_string
     };
 
   public:
-    basic_string();
-    basic_string(basic_string &);
-    basic_string(const char *);
-    basic_string(Iterator s, Iterator e);
+    String();
+    String(const String &);
+    String(const char *);
+    String(Iterator, Iterator);
+    ~String();
+
+    Iterator begin();
+    const Iterator begin() const;
+    Iterator end();
+    const Iterator end() const;
+    //reverse iterator?
+
+    size_t size() const;
+    size_t length() const;
+
+    size_t capacity() const;
+
+    void clear();
+    bool empty() const;
 
     char &operator[](unsigned int);
     char &at(unsigned int);
@@ -39,14 +55,12 @@ class basic_string
   public:
     class Iterator
     {
-        Cell *cell, *last_cell;
-        unsigned char num, last_num;
+        Cell *cell;
+        unsigned char num;
 
       public:
         Iterator(Cell *c, unsigned char num = 0) : cell(c), num(num)
         {
-            last_cell = cell;
-            last_num = num;
         }
         Iterator(const Iterator &);
         ~Iterator() {}
@@ -54,7 +68,9 @@ class basic_string
         Iterator &operator++();
         Iterator operator++(int);
         char &operator*() const;
-        char& operator[](unsigned int);
+
+        unsigned char getNum(){return num;}
+        //char& operator[](unsigned int);
     };
 };
 }
