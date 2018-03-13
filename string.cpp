@@ -36,7 +36,7 @@ basic_string::Iterator &basic_string::Iterator::operator++()
     return *this;
 }
 
-typename basic_string::Iterator basic_string::Iterator::operator++(int)
+basic_string::Iterator basic_string::Iterator::operator++(int)
 {
     basic_string::Iterator copy(*this);
     ++(*this);
