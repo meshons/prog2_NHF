@@ -3,19 +3,21 @@
 namespace NHF
 {
 
-basic_string::Iterator::Iterator(const basic_string::Iterator &i) : cell(i.cell)
+typedef basic_string::Iterator It;
+
+It::Iterator(const basic_string::Iterator &i) : cell(i.cell)
 {
     num = i.num;
 }
 
-basic_string::Iterator &basic_string::Iterator::operator=(const basic_string::Iterator &i)
+It &It::operator=(const It &i)
 {
     cell = i.cell;
     num = i.num;
     return *this;
 }
 
-basic_string::Iterator &basic_string::Iterator::operator++()
+It & It::operator++()
 {
     if (num == 19)
     {
@@ -36,17 +38,21 @@ basic_string::Iterator &basic_string::Iterator::operator++()
     return *this;
 }
 
-basic_string::Iterator basic_string::Iterator::operator++(int)
+It It::operator++(int)
 {
-    basic_string::Iterator copy(*this);
+    It copy(*this);
     ++(*this);
     return copy;
 }
 
-char &basic_string::Iterator::operator*() const
+char &It::operator*() const
 {
     if (num == 20)
         throw "túl az utolsón";
     return cell->data[num];
 }
+}
+
+char &It::operator[](unsigned int pos){
+    
 }

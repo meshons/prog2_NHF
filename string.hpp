@@ -45,6 +45,8 @@ class basic_string
       public:
         Iterator(Cell *c, unsigned char num = 0) : cell(c), num(num)
         {
+            last_cell = cell;
+            last_num = num;
         }
         Iterator(const Iterator &);
         ~Iterator() {}
@@ -52,7 +54,7 @@ class basic_string
         Iterator &operator++();
         Iterator operator++(int);
         char &operator*() const;
-        //T& operator[](unsigned int);
+        char& operator[](unsigned int);
     };
 };
 }
