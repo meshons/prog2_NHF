@@ -54,6 +54,10 @@ class String
     char &at(unsigned int);
 
     //basic_string& operator+=(const char *);
+    //operator+=
+    //operator+
+    
+    //compare operators
 
   public:
     class Iterator
@@ -73,7 +77,10 @@ class String
         char &operator*() const;
 
         unsigned char getNum(){return num;}
-        //char& operator[](unsigned int);
+        char& operator[](unsigned int);
+        bool operator==(const Iterator &)const;
+        bool operator!=(const Iterator &)const;
+
     };
 };
 }

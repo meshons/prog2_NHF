@@ -70,7 +70,7 @@ String::String(It begin, It end)
 {
     Cell *tmp = first, *prev = NULL;
     unsigned int x = 0;
-    while (&(*begin) != &(*end))
+    while (begin!= end)
     {
         if (x % 20 == 0)
         {
@@ -102,7 +102,8 @@ String::~String()
     }
 }
 
-String& String::operator=(const String & s){
+String &String::operator=(const String &s)
+{
     clear();
     Cell *tmp, *c, *prev = NULL;
     if (s.first != NULL)
@@ -126,7 +127,8 @@ String& String::operator=(const String & s){
         first = NULL;
     return *this;
 }
-String& String::operator=(const char * str){
+String &String::operator=(const char *str)
+{
     clear();
     Cell *tmp = first, *prev = NULL;
     unsigned int x = 0;
@@ -153,13 +155,14 @@ String& String::operator=(const char * str){
     }
     return *this;
 }
-String& String::operator=(char c){
+String &String::operator=(char c)
+{
     clear();
     first = new Cell();
-    first->prev=NULL;
-    first->next=NULL;
-    first->data[0]=c;
-    first->data[1]=0;
+    first->prev = NULL;
+    first->next = NULL;
+    first->data[0] = c;
+    first->data[1] = 0;
     return *this;
 }
 
@@ -286,8 +289,16 @@ char &It::operator*() const
     return cell->data[num];
 }
 
-/*char &It::operator[](unsigned int pos)
+char &It::operator[](unsigned int pos)
 {
-    return 
-}*/
 }
+bool It::operator==(const Iterator &rhs) const
+{
+    return (cell == rhs.cell && num==num);
+}
+bool It::operator!=(const Iterator &rhs) const{
+    return !(cell == rhs.cell && num==num);
+}
+
+}
+
