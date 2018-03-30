@@ -51,6 +51,10 @@ String::String(const char *str) {
     x++;
   }
 }
+String::String(char c) {
+  first = new Cell();
+  first->data[0] = c;
+}
 String::String(It begin, It end) {
   Cell *tmp = first, *prev = NULL;
   unsigned int x = 0;
@@ -80,7 +84,7 @@ String::~String() {
     first = tmp;
   }
 }
-
+void String::print(std::ostream &os) { os << "c"; }
 String &String::operator=(const String &s) {
   clear();
   Cell *tmp, *c, *prev = NULL;
@@ -130,23 +134,8 @@ String &String::operator=(char c) {
   first->prev = NULL;
   first->next = NULL;
   first->data[0] = c;
-  first->data[1] = 0;
+  // first->data[1] = 0;
   return *this;
-}
-
-It String::begin() { return It(this, first); }
-const It String::begin() const { return It(this, first); }
-It String::end() {
-  It a(this, first);
-  while (*a != 0)
-    a++;
-  return a;
-}
-const It String::end() const {
-  It a(this, first);
-  while (*a != 0)
-    a++;
-  return a;
 }
 
 size_t String::size() const {
@@ -166,6 +155,8 @@ size_t String::length() const {
     while (tmp->data[x] && x < 20)
       x++;
     sum += x;
+    if (!tmp->data[x])
+      break;
   }
   return sum;
 }
@@ -192,6 +183,62 @@ const char &String::operator[](unsigned int n) const {
 
 char &String::at(unsigned int n) { return begin().operator[](n); }
 const char &String::at(unsigned int n) const { return begin().operator[](n); }
+
+const char *String::c_str() const {
+  char *str = new char[size() + 1];
+  int i = 0;
+  for (Cell *tmp = first; tmp != NULL; tmp = tmp->next) {
+    int x = 0;
+    while (tmp->data[x] && x < 20)
+      str[i++] = tmp->data[x++];
+    if (!tmp->data[x])
+      break;
+  }
+  str[i] = 0;
+  return str;
+}
+
+String &String::operator+=(const String &s) {
+  It i1 = end();
+  It i2 = s.begin();
+  It ie = s.end();
+  Cell *tmp = first;
+  while (i2 != ie) {
+    if (i1.lastInCell()) {
+      tmp->next = new Cell();
+      tmp->next->prev = tmp;
+      tmp = tmp->next;
+      i1++;
+    }
+    *i1 = *i2;
+    i1++;
+    i2++;
+  }
+  return *this;
+}
+String &String::operator+=(const char *c) { return *this += String(c); }
+String &String::operator+=(const char c) { return *this += String(c); }
+
+String String::operator+(const String &s) const { return String(*this) += s; }
+String String::operator+(const char *c) const { return String(*this) += c; }
+String String::operator+(const char c) const { return String(*this) += c; }
+String operator+(const char *c, const String &s) { return s + c; }
+String operator+(const char c, const String &s) { return s + c; }
+
+It String::begin() const { return It(this, first); }
+// const It String::begin() const { return It(this, first); }
+It String::end() const {
+  It a(this, first);
+  while (a.val() != 0)
+    a++;
+  return a;
+}
+/*const It String::end() const {
+  It a(this, first);
+  while (*a != 0)
+    a++;
+  return a;
+}*/
 
 It &It::operator=(const It &i) {
   cell = i.cell;
@@ -226,19 +273,24 @@ It It::operator++(int) {
 }
 
 char &It::operator*() {
-  if (num >= 19 && cell->next == NULL)
-    throw "Túl a lezáró 0-án";
-  else if (num == 20)
+  if (num == 20)
     throw "Túl a végén";
+
+  return cell->data[num];
+}
+char It::val() {
+  if (num == 20)
+    return 0;
   return cell->data[num];
 }
 const char &It::operator*() const {
-  if (num >= 19 && cell->next == NULL)
-    throw "Túl a lezáró 0-án";
-  else if (num == 20)
+  // if (num >= 19 && cell->next == NULL)
+  //  throw "Túl a lezáró 0-án";
+  if (num == 20)
     throw "Túl a végén";
   return cell->data[num];
 }
+
 char &It::operator[](unsigned int pos) {
   Cell *tmp = cell;
   pos += num;
@@ -248,8 +300,8 @@ char &It::operator[](unsigned int pos) {
       pos -= 20;
     } else
       throw "nincs ilyen indexű elem";
-  if (pos == 19 && tmp->next == NULL)
-    throw "lezáró nulla nem írható felül";
+  // if (pos == 19 && tmp->next == NULL)
+  //  throw "lezáró nulla nem írható felül";
   return tmp->data[pos];
 }
 const char &It::operator[](unsigned int pos) const {
@@ -261,8 +313,8 @@ const char &It::operator[](unsigned int pos) const {
       pos -= 20;
     } else
       throw "nincs ilyen indexű elem";
-  if (pos == 19 && tmp->next == NULL)
-    throw "lezáró nulla nem írható felül";
+  // if (pos == 19 && tmp->next == NULL)
+  //  throw "lezáró nulla nem írható felül";
   return tmp->data[pos];
 }
 bool It::operator==(const Iterator &rhs) const {
