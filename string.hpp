@@ -43,7 +43,7 @@ public:
   String(const char *);
   String(char);
   String(Iterator, Iterator);
-  ~String();
+  virtual ~String();
 
   void print(std::ostream &);
 
@@ -52,10 +52,7 @@ public:
   String &operator=(char);
 
   Iterator begin() const;
-  // const Iterator begin() const;
   Iterator end() const;
-  // const Iterator end() const;
-  // reverse iterator?
 
   size_t size() const;
   size_t length() const;
