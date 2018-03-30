@@ -185,6 +185,13 @@ void String::clear() {
   first = NULL;
 }
 bool String::empty() const { return length() == 0; }
+char &String::operator[](unsigned int n) { return begin().operator[](n); }
+const char &String::operator[](unsigned int n) const {
+  return begin().operator[](n);
+}
+
+char &String::at(unsigned int n) { return begin().operator[](n); }
+const char &String::at(unsigned int n) const { return begin().operator[](n); }
 
 It &It::operator=(const It &i) {
   cell = i.cell;
@@ -288,14 +295,40 @@ It It::operator+(int n) {
   }
   return It(parent, tmp, n);
 }
+It &It::operator+=(int n) {
+  Cell *tmp = cell;
+  if (n != 0) {
+    if (n > 0) {
+      n += num;
+      while (n > 20)
+        if (tmp->next != NULL) {
+          tmp = tmp->next;
+          n -= 20;
+        } else
+          throw "túl a határon";
+    } else {
+      n -= num;
+      while (n > -20)
+        if (tmp->prev != NULL) {
+          tmp = tmp->prev;
+          n += 20;
+        } else
+          throw "túl a határon";
+    }
+  }
+  cell = tmp;
+  num = n;
+  return *this;
+}
 
 It It::operator-(int n) { return *this + (-1 * n); }
+It &It::operator-=(int n) { return *this += (-1 * n); }
 
 int It::operator-(Iterator &i) {
   int tav = 0;
   if (*this != i) {
     if (*this < i) {
-
+      // todo
     } else {
     }
   }
@@ -305,7 +338,30 @@ int It::operator-(Iterator &i) {
 bool It::operator<(const Iterator &i) const {
   if (this->parent != i.parent)
     throw "nem ugyanaz a string";
+  Cell *tmp = cell;
+  if (tmp == i.cell)
+    return num < i.num;
+  while (tmp != i.cell && tmp != NULL)
+    tmp = tmp->next;
+  if (tmp == i.cell)
+    return true;
+  return false;
 }
+bool It::operator>(const Iterator &i) const { return !(*this < i); }
+
+bool It::operator<=(const Iterator &i) const {
+  if (this->parent != i.parent)
+    throw "nem ugyanaz a string";
+  Cell *tmp = cell;
+  if (tmp == i.cell)
+    return num <= i.num;
+  while (tmp != i.cell && tmp != NULL)
+    tmp = tmp->next;
+  if (tmp == i.cell)
+    return true;
+  return false;
+}
+bool It::operator>=(const Iterator &i) const { return !(*this <= i); }
 
 It operator+(int n, It &i) { return i + n; }
 

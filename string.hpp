@@ -52,7 +52,9 @@ public:
   bool empty() const;
 
   char &operator[](unsigned int);
+  const char &operator[](unsigned int) const;
   char &at(unsigned int);
+  const char &at(unsigned int) const;
 
   // basic_string& operator+=(const char *);
   // operator+=
@@ -90,7 +92,7 @@ public:
     // out too
     //-
     Iterator operator-(int);
-    int operator-(Iterator &);
+    int operator-(Iterator &); // todo
     //-=
     Iterator &operator-=(int);
     //+=
