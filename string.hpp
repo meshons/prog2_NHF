@@ -76,6 +76,7 @@ public:
   String operator+(const char) const;
   String operator+(const String &) const;
 
+  // todo
   bool operator<(const String &) const;
   bool operator<=(const String &) const;
   bool operator>(const String &) const;
@@ -111,21 +112,13 @@ public:
     bool operator==(const Iterator &) const;
     bool operator!=(const Iterator &) const;
 
-    //+
     Iterator operator+(int);
-    // out too
-    //-
     Iterator operator-(int);
     int operator-(Iterator &); // todo
-    //-=
     Iterator &operator-=(int);
-    //+=
     Iterator &operator+=(int);
-    //>
     bool operator>(const Iterator &) const;
-    //<
     bool operator<(const Iterator &) const;
-    //>=
     bool operator>=(const Iterator &) const;
     //<=
     bool operator<=(const Iterator &) const;
@@ -135,10 +128,10 @@ public:
 String operator+(const char *, const String &);
 String operator+(const char, const String &);
 
-std::ostream operator<<(std::ostream &os, String &s);
-std::ostream operator>>(std::ostream &os, String &s);
+std::ostream &operator<<(std::ostream &, String &);
+std::istream &operator>>(std::istream &, String &); // todo
 
-String::Iterator operator+(int i, String::Iterator &);
+String::Iterator operator+(int, String::Iterator &);
 
 } // namespace NHF
 

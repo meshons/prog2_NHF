@@ -225,6 +225,13 @@ String String::operator+(const char c) const { return String(*this) += c; }
 String operator+(const char *c, const String &s) { return s + c; }
 String operator+(const char c, const String &s) { return s + c; }
 
+std::ostream &operator<<(std::ostream &os, String &s) {
+  const char *str = s.c_str();
+  os << str;
+  delete[] str;
+  return os;
+}
+
 It String::begin() const { return It(this, first); }
 // const It String::begin() const { return It(this, first); }
 It String::end() const {
