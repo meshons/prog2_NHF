@@ -421,8 +421,15 @@ int It::operator-(Iterator &i) {
   int tav = 0;
   if (*this != i) {
     if (*this < i) {
-      // todo
+      for (Cell *tmp = cell; tmp != i.cell; cell = cell->next)
+        tav -= 20;
+      tav += num;
+      tav -= i.num;
     } else {
+      for (Cell *tmp = cell; tmp != i.cell; cell = cell->prev)
+        tav += 20;
+      tav -= num;
+      tav += i.num;
     }
   }
   return tav;

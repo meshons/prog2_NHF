@@ -116,7 +116,7 @@ public:
 
     Iterator operator+(int);
     Iterator operator-(int);
-    int operator-(Iterator &); // todo
+    int operator-(Iterator &);
     Iterator &operator-=(int);
     Iterator &operator+=(int);
     bool operator>(const Iterator &) const;
@@ -130,7 +130,7 @@ String operator+(const char *, const String &);
 String operator+(const char, const String &);
 
 std::ostream &operator<<(std::ostream &, String &);
-std::istream &operator>>(std::istream &, String &); // todo
+std::istream &operator>>(std::istream &, String &);
 
 String::Iterator operator+(int, String::Iterator &);
 
