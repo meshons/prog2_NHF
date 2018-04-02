@@ -232,20 +232,54 @@ std::ostream &operator<<(std::ostream &os, String &s) {
   return os;
 }
 
+bool String::operator==(const String &s) const {
+  if (this->size() != s.size())
+    return false;
+  else {
+    int l = this->size();
+    for (int i = 0; i < l; i++)
+      if (this->operator[](i) != s[i])
+        return false;
+  }
+  return true;
+}
+bool String::operator!=(const String &s) const { return !(*this == s); }
+
+bool String::operator<(const String &s) const {
+  // hibás
+  if (s.size() == this->size()) {
+    int bl = s.size();
+    int eq = 0;
+    for (int i = 0; i < bl; i++)
+      if (this->operator[](i) == s[i])
+        eq++;
+      else if (this->operator[](i) > s[i])
+        return false;
+    if (eq == bl)
+      return false;
+  } else
+    return false;
+  return true;
+}
+bool String::operator>(const String &s) const { return true; } // hibás
+bool String::operator<=(const String &s) const { return !(*this > s); }
+bool String::operator>=(const String &s) const { return !(*this < s); }
+
+std::istream &operator>>(std::istream &is, String &s) {
+  char c;
+  while (!isspace(c = is.get()))
+    s + c;
+  is.putback(c);
+  return is;
+}
+
 It String::begin() const { return It(this, first); }
-// const It String::begin() const { return It(this, first); }
 It String::end() const {
   It a(this, first);
   while (a.val() != 0)
     a++;
   return a;
 }
-/*const It String::end() const {
-  It a(this, first);
-  while (*a != 0)
-    a++;
-  return a;
-}*/
 
 It &It::operator=(const It &i) {
   cell = i.cell;

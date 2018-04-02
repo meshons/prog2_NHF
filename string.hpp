@@ -5,6 +5,7 @@
 #define NULL 0
 #endif
 
+#include <cctype>  //isspace
 #include <cstdlib> //size_t
 #include <iostream>
 #include <new>
@@ -81,6 +82,7 @@ public:
   bool operator<=(const String &) const;
   bool operator>(const String &) const;
   bool operator>=(const String &) const;
+
   bool operator==(const String &) const;
   bool operator!=(const String &) const;
 
@@ -120,7 +122,6 @@ public:
     bool operator>(const Iterator &) const;
     bool operator<(const Iterator &) const;
     bool operator>=(const Iterator &) const;
-    //<=
     bool operator<=(const Iterator &) const;
   };
 };
