@@ -56,21 +56,21 @@ String::String(char c) {
   first->data[0] = c;
 }
 String::String(It begin, It end) {
-  Cell *tmp = first, *prev = NULL;
+  Cell **tmp = &first, *prev = NULL;
   unsigned int x = 0;
   while (begin != end) {
     if (x % 20 == 0) {
       if (!x)
         first = new Cell();
       else {
-        prev = tmp;
-        tmp->next = new Cell();
-        tmp = tmp->next;
+        prev = (*tmp);
+        (*tmp)->next = new Cell();
+        (*tmp) = (*tmp)->next;
       }
-      tmp->prev = prev;
-      tmp->next = NULL;
+      (*tmp)->prev = prev;
+      (*tmp)->next = NULL;
     }
-    tmp->data[x % 20] = *begin;
+    (*tmp)->data[x % 20] = *begin;
     begin++;
     x++;
   }
@@ -84,7 +84,9 @@ String::~String() {
     first = tmp;
   }
 }
-void String::print(std::ostream &os) { os << "c"; }
+void String::print(std::ostream &os) { os << *this; }
+void String::read(std::istream &is) { is >> *this; }
+
 String &String::operator=(const String &s) {
   clear();
   Cell *tmp, *c, *prev = NULL;
@@ -316,7 +318,6 @@ It It::operator++(int) {
 char &It::operator*() {
   if (num == 20)
     throw "Túl a végén";
-
   return cell->data[num];
 }
 char It::val() {
@@ -325,8 +326,6 @@ char It::val() {
   return cell->data[num];
 }
 const char &It::operator*() const {
-  // if (num >= 19 && cell->next == NULL)
-  //  throw "Túl a lezáró 0-án";
   if (num == 20)
     throw "Túl a végén";
   return cell->data[num];
@@ -335,27 +334,23 @@ const char &It::operator*() const {
 char &It::operator[](unsigned int pos) {
   Cell *tmp = cell;
   pos += num;
-  while (pos > 20)
+  while (pos >= 20)
     if (tmp->next != NULL) {
       tmp = tmp->next;
       pos -= 20;
     } else
       throw "nincs ilyen indexű elem";
-  // if (pos == 19 && tmp->next == NULL)
-  //  throw "lezáró nulla nem írható felül";
   return tmp->data[pos];
 }
 const char &It::operator[](unsigned int pos) const {
   Cell *tmp = cell;
   pos += num;
-  while (pos > 20)
+  while (pos >= 20)
     if (tmp->next != NULL) {
       tmp = tmp->next;
       pos -= 20;
     } else
       throw "nincs ilyen indexű elem";
-  // if (pos == 19 && tmp->next == NULL)
-  //  throw "lezáró nulla nem írható felül";
   return tmp->data[pos];
 }
 bool It::operator==(const Iterator &rhs) const {

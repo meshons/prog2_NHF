@@ -16,6 +16,7 @@ class Object {
 public:
   virtual ~Object() {}
   virtual void print(std::ostream &) = 0;
+  virtual void read(std::istream &) = 0;
 };
 
 class String : public Object {
@@ -47,6 +48,7 @@ public:
   virtual ~String();
 
   void print(std::ostream &);
+  void read(std::istream &);
 
   String &operator=(const String &);
   String &operator=(const char *);
@@ -93,8 +95,13 @@ public:
     unsigned char num;
 
   public:
-    Iterator(const String *const s, Cell *c, unsigned char num = 0)
-        : parent(s), cell(c), num(num) {}
+    Iterator(const String *const s, Cell *c = NULL, unsigned char num = 0)
+        : parent(s), num(num) {
+      if (c == NULL)
+        cell = s->first;
+      else
+        cell = c;
+    }
     Iterator(const Iterator &i) : parent(i.parent), cell(i.cell), num(i.num) {}
     ~Iterator() {}
     Iterator &operator=(const Iterator &);
