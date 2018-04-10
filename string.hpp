@@ -26,7 +26,7 @@ public:
   /// Absztrakt print függvény
   /*! Absztrakt print függvény az objektum std::ostream-re való kiírására
       @param os a cél std::ostream */
-  virtual void print(std::ostream &os) = 0;
+  virtual void print(std::ostream &os) const = 0;
   /// Absztrakt read függvény
   /*! Absztrakt read függvény az objektum std::istream-ről való beolvasásra
       @param is a forrás std::istream */
@@ -64,15 +64,21 @@ private:
   Cell *first;
 
 public:
+  //! Explicit default konstruktor
   String();
+  //! Explicit másoló konstruktor
   String(const String &);
+  //! Konstruktor c string-ből
   String(const char *);
+  //! Konstruktor char-ból
   String(char);
+  //! Konstruktor nyitó és záró Iterátor-ból
   String(Iterator, Iterator);
+  //! Virtuális destruktor
   virtual ~String();
 
-  void print(std::ostream &);
-  void read(std::istream &);
+  virtual void print(std::ostream &) const;
+  virtual void read(std::istream &);
 
   String &operator=(const String &);
   String &operator=(const char *);
@@ -144,6 +150,7 @@ public:
 
     bool operator==(const Iterator &) const;
     bool operator!=(const Iterator &) const;
+    bool operator^(const Iterator &) const;
 
     Iterator operator+(int);
     Iterator operator-(int);
@@ -160,7 +167,7 @@ public:
 String operator+(const char *, const String &);
 String operator+(const char, const String &);
 
-std::ostream &operator<<(std::ostream &, String &);
+std::ostream &operator<<(std::ostream &, const String &);
 std::istream &operator>>(std::istream &, String &);
 
 String::Iterator operator+(int, String::Iterator &);

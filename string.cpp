@@ -4,13 +4,19 @@ namespace NHF {
 
 typedef String::Iterator It;
 
-inline static void copy(char *to, char *from) {
+//! saját c string copy
+/*! csak 20-ig másol, pont a cellák méretéig
+    @param to hova másol
+    @param from honnan másol */
+inline static void copy(char *to, const char *from) {
   for (int i = 0; i < 20; i++)
     to[i] = from[i];
 }
 
+/*! Beállítja a first -öt NULL-ra */
 String::String() { first = NULL; }
 
+/*! @param s a másolandó string */
 String::String(const String &s) {
   Cell *tmp, *c, *prev = NULL;
   if (s.first != NULL) {
@@ -31,6 +37,7 @@ String::String(const String &s) {
     first = NULL;
 }
 
+/*! @param str a másolandó c string */
 String::String(const char *str) {
   Cell *tmp = first, *prev = NULL;
   unsigned int x = 0;
@@ -51,11 +58,19 @@ String::String(const char *str) {
     x++;
   }
 }
+/*! @param c a másolandó karakter */
 String::String(char c) {
   first = new Cell();
   first->data[0] = c;
 }
+/*! Egy másik String két Iterátora közötti részt másolja egy új string-be
+    @param begin a kezdő Iterátor
+    @param end a befejező Iterátor */
 String::String(It begin, It end) {
+  if (!(begin ^ end))
+    throw "nem egy string-ben van a két Iterator";
+  if (begin > end)
+    throw "nem zárt intervallum";
   Cell **tmp = &first, *prev = NULL;
   unsigned int x = 0;
   while (begin != end) {
@@ -76,6 +91,7 @@ String::String(It begin, It end) {
   }
 }
 
+/*! Virtuális hogy lehessen származtatni, kitörli a lefoglalt cellákat */
 String::~String() {
   Cell *tmp = first;
   while (first != NULL) {
@@ -84,7 +100,7 @@ String::~String() {
     first = tmp;
   }
 }
-void String::print(std::ostream &os) { os << *this; }
+void String::print(std::ostream &os) const { os << *this; }
 void String::read(std::istream &is) { is >> *this; }
 
 String &String::operator=(const String &s) {
@@ -231,7 +247,7 @@ String String::operator+(const char c) const { return String(*this) += c; }
 String operator+(const char *c, const String &s) { return s + c; }
 String operator+(const char c, const String &s) { return s + c; }
 
-std::ostream &operator<<(std::ostream &os, String &s) {
+std::ostream &operator<<(std::ostream &os, const String &s) {
   const char *str = s.c_str();
   os << str;
   delete[] str;
@@ -273,9 +289,11 @@ bool String::operator>=(const String &s) const { return !(*this < s); }
 
 std::istream &operator>>(std::istream &is, String &s) {
   char c;
+  String s2;
   while (!isspace(c = is.get()))
-    s + c;
+    s2 + c;
   is.putback(c);
+  s = s2;
   return is;
 }
 
@@ -362,6 +380,10 @@ bool It::operator==(const Iterator &rhs) const {
 }
 bool It::operator!=(const Iterator &rhs) const {
   return !(cell == rhs.cell && num == rhs.num);
+}
+
+bool It::operator^(const Iterator &rhs) const {
+  return (this->parent == rhs.parent);
 }
 
 It It::operator+(int n) {
