@@ -10,27 +10,48 @@
 #include <iostream>
 #include <new>
 
+//! PROG2 nagyházifeladat névtere
 namespace NHF {
 
+//! Általános osztály
+/*! Általános osztály, ami képes std::ostream-re kiírni
+ illetve std::istream-ből beolvasni a származtatott osztályt */
 class Object {
 public:
+  //! Virtuális destruktor
+  /*! Virtuális destruktor, hogy a származottnak is lehessen saját destruktora
+   */
   virtual ~Object() {}
-  virtual void print(std::ostream &) = 0;
-  virtual void read(std::istream &) = 0;
+
+  /// Absztrakt print függvény
+  /*! Absztrakt print függvény az objektum std::ostream-re való kiírására
+      @param os a cél std::ostream */
+  virtual void print(std::ostream &os) = 0;
+  /// Absztrakt read függvény
+  /*! Absztrakt read függvény az objektum std::istream-ről való beolvasásra
+      @param is a forrás std::istream */
+  virtual void read(std::istream &is) = 0;
 };
 
+//! A String osztály
+/*! Az általános osztály származtatott String osztály, 20-as méretű char
+    tömbökkel tárolva, saját Iterator-al és minél több értelmes művelettel */
 class String : public Object {
-  struct Cell;
-  Cell *first;
 
 public:
   class Iterator;
 
 private:
+  //! Cella osztály
+  /*! Kétirányű láncolt lista fix 20-as méretű char tömbök tárolására */
   struct Cell {
-    char data[20];
-    Cell *next;
-    Cell *prev;
+    char data[20]; //!< 20-as méretű char tömb a tárolásra
+    Cell *next;    //!< a következő cellára mutató pointer
+    Cell *prev;    //!< az előző cellára mutató pointer
+
+    //! Explicit default konstruktor
+    /*! Alapértelmezetten 0-ával tölti fel a data tömböt és
+        NULL értéket állít a next és prev pointer-be */
     Cell() {
       for (int i = 0; i < 20; i++)
         data[i] = 0;
@@ -38,6 +59,9 @@ private:
       prev = NULL;
     }
   };
+
+  //! Az első cellára mutató pointer
+  Cell *first;
 
 public:
   String();

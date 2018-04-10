@@ -205,16 +205,20 @@ String &String::operator+=(const String &s) {
   It i2 = s.begin();
   It ie = s.end();
   Cell *tmp = first;
-  while (i2 != ie) {
-    if (i1.lastInCell()) {
-      tmp->next = new Cell();
-      tmp->next->prev = tmp;
-      tmp = tmp->next;
+  if (tmp == NULL) {
+    *this = s;
+  } else {
+    while (i2 != ie) {
+      if (i1.lastInCell()) {
+        tmp->next = new Cell();
+        tmp->next->prev = tmp;
+        tmp = tmp->next;
+        i1++;
+      }
+      *i1 = *i2;
       i1++;
+      i2++;
     }
-    *i1 = *i2;
-    i1++;
-    i2++;
   }
   return *this;
 }
