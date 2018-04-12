@@ -100,8 +100,21 @@ String::~String() {
     first = tmp;
   }
 }
-void String::print(std::ostream &os) const { os << *this; }
-void String::read(std::istream &is) { is >> *this; }
+
+void String::print(std::ostream &os) const {
+  os << size() << ',';
+  os.write(c_str(), size());
+  os.write("\n", 1);
+}
+void String::read(std::istream &is) {
+  size_t len;
+  (is >> len).ignore(1);
+  char *p = new char[len + 1];
+  is.read(p, len).ignore(1);
+  p[len] = 0;
+  *this = String(p);
+  delete[] p;
+}
 
 String &String::operator=(const String &s) {
   clear();
