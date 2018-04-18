@@ -360,12 +360,16 @@ It String::end() const {
   return a;
 }
 
+/*! @param i a másolandó Iterátor
+    @return az objektum referenciája */
 It &It::operator=(const It &i) {
+  parent = i.parent;
   cell = i.cell;
   num = i.num;
   return *this;
 }
-
+/*! Az Iterátor a következő elemre vált
+    @return az objektum referenciája */
 It &It::operator++() {
   if (num == 19) {
     if (cell->next == NULL)
@@ -385,23 +389,26 @@ It &It::operator++() {
     num++;
   return *this;
 }
-
+/*! Az Iterátor a következő elemre vált
+    @return az objektum másolata */
 It It::operator++(int) {
   It tmp(*this);
   ++(*this);
   return tmp;
 }
-
+/*! @return a mutatott elem refernciája */
 char &It::operator*() {
   if (num == 20)
     throw "Túl a végén";
   return cell->data[num];
 }
+/*! @return a mutatott elem értéke */
 char It::val() {
   if (num == 20)
     return 0;
   return cell->data[num];
 }
+/*! @return a mutatott elem konstans refernciája */
 const char &It::operator*() const {
   if (num == 20)
     throw "Túl a végén";

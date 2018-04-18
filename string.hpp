@@ -149,9 +149,9 @@ public:
   /*! Saját Iterátor osztály, ami tárolja a String pointerét, az adott cellát és
    * pozíciót a cellában */
   class Iterator {
-    const String *const parent; //!< az iterátor Stringjének pointere
-    Cell *cell;                 //!< az aktuális cellára mutató pointer
-    unsigned char num;          //!< az aktuális pozíció
+    const String *parent; //!< az iterátor Stringjének pointere
+    Cell *cell;           //!< az aktuális cellára mutató pointer
+    unsigned char num;    //!< az aktuális pozíció
 
   public:
     //! Az Iterátor konstrukra
@@ -159,20 +159,28 @@ public:
         @param num a pozíció, ha van megadva cella akkor attól számítva, alapból
        0
         @param c a cella, amitől számítja a pozíciót */
-    Iterator(const String *const s, unsigned char num = 0, Cell *c = NULL)
+    Iterator(const String *s, unsigned char num = 0, Cell *c = NULL)
         : parent(s), num(num) {
       if (c == NULL)
         cell = s->first;
       else
         cell = c;
     }
+    //! Iterátor másoló konstuktora
+    /*! @param i a másolandó Iterator */
     Iterator(const Iterator &i) : parent(i.parent), cell(i.cell), num(i.num) {}
-    ~Iterator() {}
+    //! explicit operator=
     Iterator &operator=(const Iterator &);
+    //! az Iterátor preinkrementálása
     Iterator &operator++();
+    //! az Iterátor posztinkrementálása
     Iterator operator++(int);
+
+    //! hivatkozás az Iterátor által mutatott elemre
     char &operator*();
+    //! a mutatott elem értéke
     char val();
+    //! konstans referncia az Iterátor által mutatott elemre
     const char &operator*() const;
 
     bool lastInCell() { return num == 20; }
