@@ -183,25 +183,45 @@ public:
     //! konstans referncia az Iterátor által mutatott elemre
     const char &operator*() const;
 
+    //! megnézi, hogy az utolsóra mutat-e a cellában az Iterátor
+    /*! @return igaz, ha a num 20, egyébként hamis */
     bool lastInCell() { return num == 20; }
 
+    //! Visszaadja az iterátor pozícióját a cellán belül
+    /*! @return a mutatott pozíció száma a cellában */
     unsigned char getNum() { return num; }
 
+    // todo int
+
+    //! elem elérése az adott pozíciótól relatív távra
     char &operator[](unsigned int);
+    //! konstans elem elérése az adott pozíciótól relatív távra
     const char &operator[](unsigned int) const;
 
+    //! két Iterátor megegyezését vizsgálja
     bool operator==(const Iterator &) const;
+    //! két Iterátor különbözőségét vizsgálja
     bool operator!=(const Iterator &) const;
+    //! két Iterátor Stringjének megegyezését vizsgálja
     bool operator^(const Iterator &) const;
 
+    //! Iterátor léptetése megadott számmal
     Iterator operator+(int);
+    //! Iterátor csökkentése megadott számmal
     Iterator operator-(int);
+    //! Iterátorok különbségének kiszámolása
     int operator-(Iterator &);
+    //! Iterátor csökkentése megadott számmal
     Iterator &operator-=(int);
+    //! Iterátor növelése megadott számmal
     Iterator &operator+=(int);
+    //! Megállapítja, hogy az Iterátor pozíciója nagyobb-e, mint a másiké
     bool operator>(const Iterator &) const;
+    //! Megállapítja, hogy az Iterátor pozíciója kiseebb-e, mint a másiké
     bool operator<(const Iterator &) const;
+    //! Megállapítja, hogy az Iterátor pozíciója nagyobb-egyenlő-e
     bool operator>=(const Iterator &) const;
+    //! Megállapítja, hogy az Iterátor pozíciója kisebb-egyenlő-e
     bool operator<=(const Iterator &) const;
   };
 };
@@ -216,6 +236,7 @@ std::ostream &operator<<(std::ostream &, const String &);
 //! String beolvasása stream-ről operator>>
 std::istream &operator>>(std::istream &, String &);
 
+//! Az Iterátor növelése számmal
 String::Iterator operator+(int, String::Iterator &);
 
 } // namespace NHF

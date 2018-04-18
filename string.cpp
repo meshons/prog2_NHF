@@ -414,7 +414,8 @@ const char &It::operator*() const {
     throw "Túl a végén";
   return cell->data[num];
 }
-
+/*! @param pos a relatív pozíció
+    @return referencia a kért elemre */
 char &It::operator[](unsigned int pos) {
   Cell *tmp = cell;
   pos += num;
@@ -426,6 +427,8 @@ char &It::operator[](unsigned int pos) {
       throw "nincs ilyen indexű elem";
   return tmp->data[pos];
 }
+/*! @param pos a relatív pozíció
+    @return konstans referencia a kért elemre */
 const char &It::operator[](unsigned int pos) const {
   Cell *tmp = cell;
   pos += num;
@@ -437,17 +440,23 @@ const char &It::operator[](unsigned int pos) const {
       throw "nincs ilyen indexű elem";
   return tmp->data[pos];
 }
+/*! @param rhs a vizsgált Iterátor
+    @return igaz, ha megegyezik, egyébként hamis */
 bool It::operator==(const Iterator &rhs) const {
   return (cell == rhs.cell && num == rhs.num);
 }
+/*! @param rhs a vizsgált Iterátor
+    @return hamis, ha megegyezik, egyébként igaz */
 bool It::operator!=(const Iterator &rhs) const {
   return !(cell == rhs.cell && num == rhs.num);
 }
-
+/*! @param rhs a vizsgált Iterátor
+    @return igaz, ha a String megegyezik, egyébként hamis */
 bool It::operator^(const Iterator &rhs) const {
   return (this->parent == rhs.parent);
 }
-
+/*! @param n a szám amivel növelünk
+    @return az Iterátor másolata */
 It It::operator+(int n) {
   Cell *tmp = cell;
   if (n != 0) {
@@ -471,6 +480,8 @@ It It::operator+(int n) {
   }
   return It(parent, n, tmp);
 }
+/*! @param n a szám amivel növelünk
+    @return az Iterátor referenciája */
 It &It::operator+=(int n) {
   Cell *tmp = cell;
   if (n != 0) {
@@ -496,10 +507,14 @@ It &It::operator+=(int n) {
   num = n;
   return *this;
 }
-
+/*! @param n a szám amivel csökkentünk
+    @return az Iterátor másolata */
 It It::operator-(int n) { return *this + (-1 * n); }
+/*! @param n a szám amivel csökkentünk
+    @return az Iterátor referenciája */
 It &It::operator-=(int n) { return *this += (-1 * n); }
-
+/*! @param i a kivont Iterátor
+    @return a távolságuk */
 int It::operator-(Iterator &i) {
   int tav = 0;
   if (*this != i) {
@@ -517,7 +532,8 @@ int It::operator-(Iterator &i) {
   }
   return tav;
 }
-
+/*! @param i az összehasonlítandó Iterátor
+    @return igaz, ha i pozíciója nagyobb, hamis ha nem */
 bool It::operator<(const Iterator &i) const {
   if (this->parent != i.parent)
     throw "nem ugyanaz a string";
@@ -530,8 +546,11 @@ bool It::operator<(const Iterator &i) const {
     return true;
   return false;
 }
-bool It::operator>(const Iterator &i) const { return !(*this < i); }
-
+/*! @param i az összehasonlítandó Iterátor
+    @return igaz, ha i pozíciója kisebb, hamis ha nem */
+bool It::operator>(const Iterator &i) const { return !(*this <= i); }
+/*! @param i az összehasonlítandó Iterátor
+    @return igaz, ha i pozíciója nagyobb-egyenlő, hamis ha nem */
 bool It::operator<=(const Iterator &i) const {
   if (this->parent != i.parent)
     throw "nem ugyanaz a string";
@@ -544,8 +563,12 @@ bool It::operator<=(const Iterator &i) const {
     return true;
   return false;
 }
-bool It::operator>=(const Iterator &i) const { return !(*this <= i); }
-
+/*! @param i az összehasonlítandó Iterátor
+    @return igaz, ha i pozíciója kisebb-egyenlő, hamis ha nem */
+bool It::operator>=(const Iterator &i) const { return !(*this < i); }
+/*! @param n a szám amivel növelni akarjuk az Iterátor
+    @param i az Iterátor referenciája
+    @return az Iterátor másolata */
 It operator+(int n, It &i) { return i + n; }
 
 } // namespace NHF

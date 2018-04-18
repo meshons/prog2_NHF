@@ -25,5 +25,8 @@ void Teszt_konstruktor() {
 
 int main() {
   Teszt_konstruktor();
+  String s2 = "Kecske ";
+  String s3 = "hazi";
+  std::cout << s2 + s3 << std::endl;
   return 0;
 }
