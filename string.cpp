@@ -100,12 +100,13 @@ String::~String() {
     first = tmp;
   }
 }
-
-void String::print(std::ostream &os) const {
+/*! @param os a kimeneti stream */
+void String::write(std::ostream &os) const {
   os << size() << ',';
   os.write(c_str(), size());
   os.write("\n", 1);
 }
+/*! @param is a bemeneti stream */
 void String::read(std::istream &is) {
   size_t len;
   (is >> len).ignore(1);
@@ -115,7 +116,8 @@ void String::read(std::istream &is) {
   *this = String(p);
   delete[] p;
 }
-
+/*! @param s a másolandó String
+    @return az objektum referenciája */
 String &String::operator=(const String &s) {
   clear();
   Cell *tmp, *c, *prev = NULL;
@@ -137,6 +139,8 @@ String &String::operator=(const String &s) {
     first = NULL;
   return *this;
 }
+/*! @param str a másolandó c szerű string
+    @return az objektum referenciája */
 String &String::operator=(const char *str) {
   clear();
   Cell *tmp = first, *prev = NULL;
@@ -159,6 +163,8 @@ String &String::operator=(const char *str) {
   }
   return *this;
 }
+/*! @param c a másolandó karakter
+    @return az objektum referenciája */
 String &String::operator=(char c) {
   clear();
   first = new Cell();
@@ -168,7 +174,7 @@ String &String::operator=(char c) {
   // first->data[1] = 0;
   return *this;
 }
-
+/*! @return size_t - a String-ben tárolt karakter sorozat hossza */
 size_t String::size() const {
   size_t sum = 0;
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next) {
@@ -179,6 +185,7 @@ size_t String::size() const {
   }
   return sum;
 }
+/*! @return size_t - a String-ben tárolt karakter sorozat hossza */
 size_t String::length() const {
   size_t sum = 0;
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next) {
@@ -191,6 +198,7 @@ size_t String::length() const {
   }
   return sum;
 }
+/*! @return size_t - a String jelenlegi maximális kapacitása */
 size_t String::capacity() const {
   size_t sum = 0;
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next)
@@ -207,14 +215,22 @@ void String::clear() {
   first = NULL;
 }
 bool String::empty() const { return length() == 0; }
+/*! @param n a keresett elem pozíciója
+    @return a karakter refernciája */
 char &String::operator[](unsigned int n) { return begin().operator[](n); }
+/*! @param n a keresett elem pozíciója
+    @return a karakter konstans refernciája */
 const char &String::operator[](unsigned int n) const {
   return begin().operator[](n);
 }
-
+/*! @param n a keresett elem pozíciója
+    @return a karakter refernciája */
 char &String::at(unsigned int n) { return begin().operator[](n); }
+/*! @param n a keresett elem pozíciója
+    @return a karakter konstans refernciája */
 const char &String::at(unsigned int n) const { return begin().operator[](n); }
 
+/*! @return konstant karaktersorozat a Stringből */
 const char *String::c_str() const {
   char *str = new char[size() + 1];
   int i = 0;
@@ -228,7 +244,8 @@ const char *String::c_str() const {
   str[i] = 0;
   return str;
 }
-
+/*! @param s a hozzáfűzendő String
+    @return az objektum refernciája */
 String &String::operator+=(const String &s) {
   It i1 = end();
   It i2 = s.begin();
@@ -251,22 +268,41 @@ String &String::operator+=(const String &s) {
   }
   return *this;
 }
+/*! @param c a hozzáfűzendő c szerű string
+    @return az objektum refernciája */
 String &String::operator+=(const char *c) { return *this += String(c); }
+/*! @param c a hozzáfűzendő karakter
+    @return az objektum refernciája */
 String &String::operator+=(const char c) { return *this += String(c); }
-
+/*! @param s a hozzáfűzendő String
+    @return az új összefűzött objektum */
 String String::operator+(const String &s) const { return String(*this) += s; }
+/*! @param c a hozzáfűzendő c szerű string
+    @return az új összefűzött objektum */
 String String::operator+(const char *c) const { return String(*this) += c; }
+/*! @param c a hozzáfűzendő karakter
+    @return az új összefűzött objektum */
 String String::operator+(const char c) const { return String(*this) += c; }
+/*! @param c a hozzáfűzendő c szerű string
+    @param s a String objektum
+    @return az új összefűzött objektum */
 String operator+(const char *c, const String &s) { return s + c; }
+/*! @param c a hozzáfűzendő karakter
+    @param s a String objektum
+    @return az új összefűzött objektum */
 String operator+(const char c, const String &s) { return s + c; }
 
+/*! @param os a stream amire kiírja
+    @param s a kiírandó String
+    @return a stream referenciája */
 std::ostream &operator<<(std::ostream &os, const String &s) {
   const char *str = s.c_str();
   os << str;
   delete[] str;
   return os;
 }
-
+/*! @param s a vizsgálandó String
+    @return igaz, ha megyezik, egyébként hamis */
 bool String::operator==(const String &s) const {
   if (this->size() != s.size())
     return false;
@@ -278,6 +314,8 @@ bool String::operator==(const String &s) const {
   }
   return true;
 }
+/*! @param s a vizsgálandó String
+    @return hamis, ha megyezik, egyébként igaz */
 bool String::operator!=(const String &s) const { return !(*this == s); }
 
 bool String::operator<(const String &s) const {
@@ -300,6 +338,9 @@ bool String::operator>(const String &s) const { return true; } // hibás
 bool String::operator<=(const String &s) const { return !(*this > s); }
 bool String::operator>=(const String &s) const { return !(*this < s); }
 
+/*! @param is a stream amiről beolvasni szeretnénk
+    @param s a beolvasás célja
+    @return a stream referenciája */
 std::istream &operator>>(std::istream &is, String &s) {
   char c;
   String s2;
@@ -309,10 +350,11 @@ std::istream &operator>>(std::istream &is, String &s) {
   s = s2;
   return is;
 }
-
-It String::begin() const { return It(this, first); }
+/*! @return Iterátor a kezdetére */
+It String::begin() const { return It(this, 0, first); }
+/*! @return Iterátor a vége után */
 It String::end() const {
-  It a(this, first);
+  It a(this, 0, first);
   while (a.val() != 0)
     a++;
   return a;
@@ -420,7 +462,7 @@ It It::operator+(int n) {
           throw "túl a határon";
     }
   }
-  return It(parent, tmp, n);
+  return It(parent, n, tmp);
 }
 It &It::operator+=(int n) {
   Cell *tmp = cell;

@@ -26,7 +26,7 @@ public:
   /// Absztrakt print függvény
   /*! Absztrakt print függvény az objektum std::ostream-re való kiírására
       @param os a cél std::ostream */
-  virtual void print(std::ostream &os) const = 0;
+  virtual void write(std::ostream &os) const = 0;
   /// Absztrakt read függvény
   /*! Absztrakt read függvény az objektum std::istream-ről való beolvasásra
       @param is a forrás std::istream */
@@ -77,36 +77,60 @@ public:
   //! Virtuális destruktor
   virtual ~String();
 
-  virtual void print(std::ostream &) const;
+  //! A speciális streamre írás a perzisztenciához
+  virtual void write(std::ostream &) const;
+  //! A speciális streamből beolvasás a perzisztenciához
   virtual void read(std::istream &);
 
+  //! explicit operator=
   String &operator=(const String &);
+  //! explicit operator=
   String &operator=(const char *);
+  //! explicit operator=
   String &operator=(char);
 
+  //! Iterator a String kezdetére
   Iterator begin() const;
+  //! Iterator a String vége után
   Iterator end() const;
 
+  //! A String-ben tárolt karaktersorozat hossza
   size_t size() const;
+  //! A String-ben tárolt karaktersorozat hossza
   size_t length() const;
 
+  //! A String jelenlegi maximális kapacitása
   size_t capacity() const;
 
+  //! Kiüríti a String-et
   void clear();
+  //! Megadja hogy üres-e a String
+  /*! @return bool, hogy üres-e */
   bool empty() const;
 
+  //! referencia a String adott pozíciójú elemére
   char &operator[](unsigned int);
+  //! konstans referencia a String adott pozíciójú elemére
   const char &operator[](unsigned int) const;
+  //! referencia a String adott pozíciójú elemére
   char &at(unsigned int);
+  //! konstans referencia a String adott pozíciójú elemére
   const char &at(unsigned int) const;
 
+  //! a String c szerű stringé konvertálása, memóriát foglal!
   const char *c_str() const; // lefoglal
 
+  //! összefűzés
   String &operator+=(const char *);
+  //! összefűzés
   String &operator+=(const char);
+  //! összefűzés
   String &operator+=(const String &);
+  //! összefűzés
   String operator+(const char *) const;
+  //! összefűzés
   String operator+(const char) const;
+  //! összefűzés
   String operator+(const String &) const;
 
   // todo
@@ -115,17 +139,27 @@ public:
   bool operator>(const String &) const;
   bool operator>=(const String &) const;
 
+  //! két String megegyezik-e
   bool operator==(const String &) const;
+  //! két String eltér-e
   bool operator!=(const String &) const;
 
 public:
+  //! A String saját Iterátora
+  /*! Saját Iterátor osztály, ami tárolja a String pointerét, az adott cellát és
+   * pozíciót a cellában */
   class Iterator {
-    const String *const parent;
-    Cell *cell;
-    unsigned char num;
+    const String *const parent; //!< az iterátor Stringjének pointere
+    Cell *cell;                 //!< az aktuális cellára mutató pointer
+    unsigned char num;          //!< az aktuális pozíció
 
   public:
-    Iterator(const String *const s, Cell *c = NULL, unsigned char num = 0)
+    //! Az Iterátor konstrukra
+    /*! @param s a String
+        @param num a pozíció, ha van megadva cella akkor attól számítva, alapból
+       0
+        @param c a cella, amitől számítja a pozíciót */
+    Iterator(const String *const s, unsigned char num = 0, Cell *c = NULL)
         : parent(s), num(num) {
       if (c == NULL)
         cell = s->first;
@@ -164,10 +198,14 @@ public:
   };
 };
 
+//! Összefűzés jobboldali String-el
 String operator+(const char *, const String &);
+//! Összefűzés jobboldali String-el
 String operator+(const char, const String &);
 
+//! String kiírása stream-re operator<<
 std::ostream &operator<<(std::ostream &, const String &);
+//! String beolvasása stream-ről operator>>
 std::istream &operator>>(std::istream &, String &);
 
 String::Iterator operator+(int, String::Iterator &);
