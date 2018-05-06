@@ -103,18 +103,31 @@ String::~String() {
 /*! @param os a kimeneti stream */
 void String::write(std::ostream &os) const {
   os << size() << ',';
-  const char * s = c_str();
-  os.write(s, size());
+  const char *s = c_str();
+  if (std::streamsize(size()) < 0) {
+    std::streamsize p = std::streamsize(size() - 9223372036854775807);
+    os.write(s, 9223372036854775807);
+    os.write(s + 9223372036854775807, p);
+  } else {
+    os.write(s, std::streamsize(size()));
+  }
   delete s;
   os.write("\n", 1);
 }
 /*! @param is a bemeneti stream */
 void String::read(std::istream &is) {
   size_t len;
-  while(!(is >> len));
+  while (!(is >> len))
+    ;
   is.ignore(1);
   char *p = new char[len + 1];
-  is.read(p, len).ignore(1);
+  if (std::streamsize(len) < 0) {
+    std::streamsize l = std::streamsize(len - 9223372036854775807);
+    is.read(p, 9223372036854775807);
+    is.read(p + 9223372036854775807, l);
+  } else {
+    is.read(p, std::streamsize(len)).ignore(1);
+  }
   p[len] = 0;
   *this = String(p);
   delete[] p;
@@ -181,7 +194,7 @@ String &String::operator=(char c) {
 size_t String::size() const {
   size_t sum = 0;
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next) {
-    int x = 0;
+    size_t x = 0;
     while (tmp->data[x] && x < 20)
       x++;
     sum += x;
@@ -192,7 +205,7 @@ size_t String::size() const {
 size_t String::length() const {
   size_t sum = 0;
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next) {
-    int x = 0;
+    size_t x = 0;
     while (tmp->data[x] && x < 20)
       x++;
     sum += x;
@@ -220,18 +233,16 @@ void String::clear() {
 bool String::empty() const { return length() == 0; }
 /*! @param n a keresett elem pozíciója
     @return a karakter refernciája */
-char &String::operator[](unsigned int n) { return begin().operator[](n); }
+char &String::operator[](size_t n) { return begin().operator[](n); }
 /*! @param n a keresett elem pozíciója
     @return a karakter konstans refernciája */
-const char &String::operator[](unsigned int n) const {
-  return begin().operator[](n);
-}
+const char &String::operator[](size_t n) const { return begin().operator[](n); }
 /*! @param n a keresett elem pozíciója
     @return a karakter refernciája */
-char &String::at(unsigned int n) { return begin().operator[](n); }
+char &String::at(size_t n) { return begin().operator[](n); }
 /*! @param n a keresett elem pozíciója
     @return a karakter konstans refernciája */
-const char &String::at(unsigned int n) const { return begin().operator[](n); }
+const char &String::at(size_t n) const { return begin().operator[](n); }
 
 /*! @return konstant karaktersorozat a Stringből */
 const char *String::c_str() const {
@@ -310,8 +321,8 @@ bool String::operator==(const String &s) const {
   if (this->size() != s.size())
     return false;
   else {
-    int l = this->size();
-    for (int i = 0; i < l; i++)
+    size_t l = this->size();
+    for (size_t i = 0; i < l; i++)
       if (this->operator[](i) != s[i])
         return false;
   }
@@ -324,9 +335,9 @@ bool String::operator!=(const String &s) const { return !(*this == s); }
 bool String::operator<(const String &s) const {
   // hibás
   if (s.size() == this->size()) {
-    int bl = s.size();
-    int eq = 0;
-    for (int i = 0; i < bl; i++)
+    size_t bl = s.size();
+    size_t eq = 0;
+    for (size_t i = 0; i < bl; i++)
       if (this->operator[](i) == s[i])
         eq++;
       else if (this->operator[](i) > s[i])
@@ -347,7 +358,7 @@ bool String::operator>=(const String &s) const { return !(*this < s); }
 std::istream &operator>>(std::istream &is, String &s) {
   char c;
   String s2;
-  while (!isspace(c = is.get()))
+  while (!isspace(c = char(is.get())))
     s2 + c;
   is.putback(c);
   s = s2;
@@ -419,7 +430,7 @@ const char &It::operator*() const {
 }
 /*! @param pos a relatív pozíció
     @return referencia a kért elemre */
-char &It::operator[](unsigned int pos) {
+char &It::operator[](size_t pos) {
   Cell *tmp = cell;
   pos += num;
   while (pos >= 20)
@@ -432,7 +443,7 @@ char &It::operator[](unsigned int pos) {
 }
 /*! @param pos a relatív pozíció
     @return konstans referencia a kért elemre */
-const char &It::operator[](unsigned int pos) const {
+const char &It::operator[](size_t pos) const {
   Cell *tmp = cell;
   pos += num;
   while (pos >= 20)
@@ -460,7 +471,22 @@ bool It::operator^(const Iterator &rhs) const {
 }
 /*! @param n a szám amivel növelünk
     @return az Iterátor másolata */
-It It::operator+(int n) {
+It It::operator+(size_t n) {
+  Cell *tmp = cell;
+  if (n != 0) {
+    n += num;
+    while (n > 20)
+      if (tmp->next != NULL) {
+        tmp = tmp->next;
+        n -= 20;
+      } else
+        throw "túl a határon";
+  }
+  return It(parent, n, tmp);
+}
+/*! @param n a szám amivel növelünk
+    @return az Iterátor másolata */
+It It::operator+(long long n) {
   Cell *tmp = cell;
   if (n != 0) {
     if (n > 0) {
@@ -473,7 +499,7 @@ It It::operator+(int n) {
           throw "túl a határon";
     } else {
       n -= num;
-      while (n > -20)
+      while (n > (long long)-20) //
         if (tmp->prev != NULL) {
           tmp = tmp->prev;
           n += 20;
@@ -481,11 +507,11 @@ It It::operator+(int n) {
           throw "túl a határon";
     }
   }
-  return It(parent, n, tmp);
+  return It(parent, size_t(n), tmp);
 }
 /*! @param n a szám amivel növelünk
     @return az Iterátor referenciája */
-It &It::operator+=(int n) {
+It &It::operator+=(size_t n) {
   Cell *tmp = cell;
   if (n != 0) {
     if (n > 0) {
@@ -512,13 +538,13 @@ It &It::operator+=(int n) {
 }
 /*! @param n a szám amivel csökkentünk
     @return az Iterátor másolata */
-It It::operator-(int n) { return *this + (-1 * n); }
+It It::operator-(size_t n) { return *this + (-1 * n); }
 /*! @param n a szám amivel csökkentünk
     @return az Iterátor referenciája */
-It &It::operator-=(int n) { return *this += (-1 * n); }
+It &It::operator-=(size_t n) { return *this += (-1 * n); }
 /*! @param i a kivont Iterátor
     @return a távolságuk */
-int It::operator-(Iterator &i) {
+size_t It::operator-(Iterator &i) {
   int tav = 0;
   if (*this != i) {
     if (*this < i) {
@@ -572,6 +598,6 @@ bool It::operator>=(const Iterator &i) const { return !(*this < i); }
 /*! @param n a szám amivel növelni akarjuk az Iterátor
     @param i az Iterátor referenciája
     @return az Iterátor másolata */
-It operator+(int n, It &i) { return i + n; }
+It operator+(size_t n, It &i) { return i + n; }
 
 } // namespace NHF

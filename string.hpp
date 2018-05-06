@@ -109,13 +109,13 @@ public:
   bool empty() const;
 
   //! referencia a String adott pozíciójú elemére
-  char &operator[](unsigned int);
+  char &operator[](size_t);
   //! konstans referencia a String adott pozíciójú elemére
-  const char &operator[](unsigned int) const;
+  const char &operator[](size_t) const;
   //! referencia a String adott pozíciójú elemére
-  char &at(unsigned int);
+  char &at(size_t);
   //! konstans referencia a String adott pozíciójú elemére
-  const char &at(unsigned int) const;
+  const char &at(size_t) const;
 
   //! a String c szerű stringé konvertálása, memóriát foglal!
   const char *c_str() const; // lefoglal
@@ -151,15 +151,16 @@ public:
   class Iterator {
     const String *parent; //!< az iterátor Stringjének pointere
     Cell *cell;           //!< az aktuális cellára mutató pointer
-    unsigned char num;    //!< az aktuális pozíció
+    size_t num;           //!< az aktuális pozíció
 
   public:
     //! Az Iterátor konstrukra
     /*! @param s a String
-        @param num2 a pozíció, ha van megadva cella akkor attól számítva, alapból
+        @param num2 a pozíció, ha van megadva cella akkor attól számítva,
+       alapból
        0
         @param c a cella, amitől számítja a pozíciót */
-    Iterator(const String *s, unsigned char num2 = 0, Cell *c = NULL)
+    Iterator(const String *s, size_t num2 = 0, Cell *c = NULL)
         : parent(s), num(num2) {
       if (c == NULL)
         cell = s->first;
@@ -189,14 +190,14 @@ public:
 
     //! Visszaadja az iterátor pozícióját a cellán belül
     /*! @return a mutatott pozíció száma a cellában */
-    unsigned char getNum() { return num; }
+    size_t getNum() { return num; }
 
     // todo int
 
     //! elem elérése az adott pozíciótól relatív távra
-    char &operator[](unsigned int);
+    char &operator[](size_t);
     //! konstans elem elérése az adott pozíciótól relatív távra
-    const char &operator[](unsigned int) const;
+    const char &operator[](size_t) const;
 
     //! két Iterátor megegyezését vizsgálja
     bool operator==(const Iterator &) const;
@@ -206,15 +207,19 @@ public:
     bool operator^(const Iterator &) const;
 
     //! Iterátor léptetése megadott számmal
-    Iterator operator+(int);
+    Iterator operator+(size_t);
+    //! Iterátor léptetése megadott számmal
+    Iterator operator+(long long);
     //! Iterátor csökkentése megadott számmal
-    Iterator operator-(int);
+    Iterator operator-(size_t);
+    //! Iterátor csökkentése megadott számmal
+    Iterator operator-(long long);
     //! Iterátorok különbségének kiszámolása
-    int operator-(Iterator &);
+    size_t operator-(Iterator &);
     //! Iterátor csökkentése megadott számmal
-    Iterator &operator-=(int);
+    Iterator &operator-=(size_t);
     //! Iterátor növelése megadott számmal
-    Iterator &operator+=(int);
+    Iterator &operator+=(size_t);
     //! Megállapítja, hogy az Iterátor pozíciója nagyobb-e, mint a másiké
     bool operator>(const Iterator &) const;
     //! Megállapítja, hogy az Iterátor pozíciója kiseebb-e, mint a másiké
@@ -237,7 +242,7 @@ std::ostream &operator<<(std::ostream &, const String &);
 std::istream &operator>>(std::istream &, String &);
 
 //! Az Iterátor növelése számmal
-String::Iterator operator+(int, String::Iterator &);
+String::Iterator operator+(size_t, String::Iterator &);
 
 } // namespace NHF
 

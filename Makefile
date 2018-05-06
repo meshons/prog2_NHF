@@ -1,4 +1,3 @@
 debug:
-	g++ string.cpp -c -g -Wall -pedantic
-	g++ test_main.cpp string.o -o test.exe -g -Wall -pedantic
-	doxygen doc -html
+	clang++ string.cpp -c -g -Weverything -Wno-padded -pedantic -std=c++11 -Wno-c++98-compat-pedantic -Wno-old-style-cast
+	clang++ test_main.cpp string.o -o test2.exe -g -Weverything -pedantic -std=c++11 -Wno-c++98-compat-pedantic  -Wno-old-style-cast
