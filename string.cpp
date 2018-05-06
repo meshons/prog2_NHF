@@ -103,13 +103,16 @@ String::~String() {
 /*! @param os a kimeneti stream */
 void String::write(std::ostream &os) const {
   os << size() << ',';
-  os.write(c_str(), size());
+  const char * s = c_str();
+  os.write(s, size());
+  delete s;
   os.write("\n", 1);
 }
 /*! @param is a bemeneti stream */
 void String::read(std::istream &is) {
   size_t len;
-  (is >> len).ignore(1);
+  while(!(is >> len));
+  is.ignore(1);
   char *p = new char[len + 1];
   is.read(p, len).ignore(1);
   p[len] = 0;
@@ -206,7 +209,7 @@ size_t String::capacity() const {
   return sum * 20;
 }
 void String::clear() {
-  Cell *tmp = first;
+  Cell *tmp;
   while (first != NULL) {
     tmp = first->next;
     delete first;

@@ -156,11 +156,11 @@ public:
   public:
     //! Az Iterátor konstrukra
     /*! @param s a String
-        @param num a pozíció, ha van megadva cella akkor attól számítva, alapból
+        @param num2 a pozíció, ha van megadva cella akkor attól számítva, alapból
        0
         @param c a cella, amitől számítja a pozíciót */
-    Iterator(const String *s, unsigned char num = 0, Cell *c = NULL)
-        : parent(s), num(num) {
+    Iterator(const String *s, unsigned char num2 = 0, Cell *c = NULL)
+        : parent(s), num(num2) {
       if (c == NULL)
         cell = s->first;
       else
