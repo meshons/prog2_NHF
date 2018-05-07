@@ -443,7 +443,7 @@ char &It::operator[](size_t pos) {
 }
 /*! @param pos a relatív pozíció
     @return konstans referencia a kért elemre */
-const char &It::operator[](size_t pos) const {
+char It::operator[](size_t pos) const {
   Cell *tmp = cell;
   pos += num;
   while (pos >= 20)
@@ -452,6 +452,56 @@ const char &It::operator[](size_t pos) const {
       pos -= 20;
     } else
       throw "nincs ilyen indexű elem";
+  return tmp->data[pos];
+}
+/*! @param pos a relatív pozíció
+    @return referencia a kért elemre */
+char &It::operator[](long long pos) {
+  Cell *tmp = cell;
+  if (pos > 0) {
+    pos += num;
+    while (pos >= 20)
+      if (tmp->next != NULL) {
+        tmp = tmp->next;
+        pos -= 20;
+      } else
+        throw "nincs ilyen indexű elem";
+  } else if (pos < 0) {
+    pos += num;
+    pos *= -1;
+    while (pos >= 20)
+      if (tmp->prev != NULL) {
+        tmp = tmp->prev;
+        pos -= 20;
+      } else
+        throw "nincs ilyen indexű elem";
+  } else
+    return tmp->data[num];
+  return tmp->data[pos];
+}
+/*! @param pos a relatív pozíció
+    @return konstans referencia a kért elemre */
+char It::operator[](long long pos) const {
+  Cell *tmp = cell;
+  if (pos > 0) {
+    pos += num;
+    while (pos >= 20)
+      if (tmp->next != NULL) {
+        tmp = tmp->next;
+        pos -= 20;
+      } else
+        throw "nincs ilyen indexű elem";
+  } else if (pos < 0) {
+    pos += num;
+    pos *= -1;
+    while (pos >= 20)
+      if (tmp->prev != NULL) {
+        tmp = tmp->prev;
+        pos -= 20;
+      } else
+        throw "nincs ilyen indexű elem";
+  } else
+    return tmp->data[num];
   return tmp->data[pos];
 }
 /*! @param rhs a vizsgált Iterátor

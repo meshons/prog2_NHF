@@ -197,7 +197,11 @@ public:
     //! elem elérése az adott pozíciótól relatív távra
     char &operator[](size_t);
     //! konstans elem elérése az adott pozíciótól relatív távra
-    const char &operator[](size_t) const;
+    char operator[](size_t) const;
+    //! elem elérése az adott pozíciótól relatív távra
+    char &operator[](long long);
+    //! konstans elem elérése az adott pozíciótól relatív távra
+    char operator[](long long) const;
 
     //! két Iterátor megegyezését vizsgálja
     bool operator==(const Iterator &) const;
@@ -214,12 +218,16 @@ public:
     Iterator operator-(size_t);
     //! Iterátor csökkentése megadott számmal
     Iterator operator-(long long);
-    //! Iterátorok különbségének kiszámolása
+    //! Iterátorok különbségének abszolútértékének kiszámolása
     size_t operator-(Iterator &);
     //! Iterátor csökkentése megadott számmal
     Iterator &operator-=(size_t);
+    //! Iterátor csökkentése megadott számmal
+    Iterator &operator-=(long long);
     //! Iterátor növelése megadott számmal
     Iterator &operator+=(size_t);
+    //! Iterátor növelése megadott számmal
+    Iterator &operator+=(long long);
     //! Megállapítja, hogy az Iterátor pozíciója nagyobb-e, mint a másiké
     bool operator>(const Iterator &) const;
     //! Megállapítja, hogy az Iterátor pozíciója kiseebb-e, mint a másiké
@@ -243,6 +251,8 @@ std::istream &operator>>(std::istream &, String &);
 
 //! Az Iterátor növelése számmal
 String::Iterator operator+(size_t, String::Iterator &);
+//! Az Iterátor növelése számmal
+String::Iterator operator+(long long, String::Iterator &);
 
 } // namespace NHF
 
