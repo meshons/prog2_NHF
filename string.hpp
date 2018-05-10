@@ -192,6 +192,9 @@ public:
     /*! @return a mutatott pozíció száma a cellában */
     size_t getNum() { return num; }
 
+    //! Visszaadja az iterátor celláját
+    /*! @return a cella pointere */
+    Cell *getCell() { return cell; }
     // todo int
 
     //! elem elérése az adott pozíciótól relatív távra

@@ -264,7 +264,7 @@ String &String::operator+=(const String &s) {
   It i1 = end();
   It i2 = s.begin();
   It ie = s.end();
-  Cell *tmp = first;
+  Cell *tmp = i1.getCell();
   if (tmp == NULL) {
     *this = s;
   } else {

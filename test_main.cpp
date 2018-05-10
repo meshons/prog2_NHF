@@ -24,9 +24,15 @@ void Teszt_konstruktor() {
 }
 
 int main() {
-  Teszt_konstruktor();
-  String s2 = "Kecske ";
-  String s3 = "hazi";
-  std::cout << s2 + s3 << std::endl;
+  try {
+    Teszt_konstruktor();
+    String s2 = "20-nal nagyobb cuccot probalok beleírni nemtudom miert ";
+    String s3 = "hazi 20nal nagyobb cuccal megy e roli kedveert";
+    std::cout << s2 + s3 << std::endl;
+    s2 += s3;
+    std::cout << s2 << std::endl;
+  } catch (const char *str) {
+    std::cout << str << std::endl;
+  }
   return 0;
 }
