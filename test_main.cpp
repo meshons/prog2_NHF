@@ -31,6 +31,11 @@ int main() {
     std::cout << s2 + s3 << std::endl;
     s2 += s3;
     std::cout << s2 << std::endl;
+    s2 += s2;
+    std::cout << s2 << std::endl;
+    String s4 = "valami ";
+    s4 = s4 + s4;
+    std::cout << s4 << std ::endl;
   } catch (const char *str) {
     std::cout << str << std::endl;
   }
