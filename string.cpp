@@ -252,7 +252,7 @@ const char *String::c_str() const {
     int x = 0;
     while (tmp->data[x] && x < 20)
       str[i++] = tmp->data[x++];
-    if (!tmp->data[x])
+    if (x != 20 && !tmp->data[x])
       break;
   }
   str[i] = 0;
@@ -564,6 +564,23 @@ It It::operator+(long long n) {
 It &It::operator+=(size_t n) {
   Cell *tmp = cell;
   if (n != 0) {
+    n += num;
+    while (n > 20)
+      if (tmp->next != NULL) {
+        tmp = tmp->next;
+        n -= 20;
+      } else
+        throw "túl a határon";
+  }
+  cell = tmp;
+  num = n;
+  return *this;
+}
+/*! @param n a szám amivel növelünk
+    @return az Iterátor referenciája */
+It &It::operator+=(long long n) {
+  Cell *tmp = cell;
+  if (n != 0) {
     if (n > 0) {
       n += num;
       while (n > 20)
@@ -583,23 +600,59 @@ It &It::operator+=(size_t n) {
     }
   }
   cell = tmp;
-  num = n;
+  num = (size_t)n;
   return *this;
 }
 /*! @param n a szám amivel csökkentünk
     @return az Iterátor másolata */
-It It::operator-(size_t n) { return *this + (-1 * n); }
+It It::operator-(size_t n) {
+  // hibás
+  Cell *tmp = cell;
+  if (n != 0) {
+    n -= num;
+    while (n > 20)
+      if (tmp->prev != NULL) {
+        tmp = tmp->prev;
+        n -= 20;
+      } else
+        throw "túl a határon";
+  }
+  return It(parent, n, tmp);
+}
+
+/*! @param n a szám amivel csökkentünk
+    @return az Iterátor másolata */
+It It::operator-(long long n) { return *this + (-1) * n; }
+
 /*! @param n a szám amivel csökkentünk
     @return az Iterátor referenciája */
-It &It::operator-=(size_t n) { return *this += (-1 * n); }
+It &It::operator-=(size_t n) {
+  Cell *tmp = cell;
+  if (n != 0) {
+    n -= num;
+    while (n > 20)
+      if (tmp->prev != NULL) {
+        tmp = tmp->prev;
+        n -= 20;
+      } else
+        throw "túl a határon";
+  }
+  cell = tmp;
+  num = n;
+  return *this;
+}
+/*! @param n a szám amivel csökkentünk
+    @return az Iterátor referenciája */
+It &It::operator-=(long long n) { return *this += (-1) * n; }
+
 /*! @param i a kivont Iterátor
     @return a távolságuk */
 size_t It::operator-(Iterator &i) {
-  int tav = 0;
+  size_t tav = 0;
   if (*this != i) {
     if (*this < i) {
       for (Cell *tmp = cell; tmp != i.cell; cell = cell->next)
-        tav -= 20;
+        tav += 20;
       tav += num;
       tav -= i.num;
     } else {
