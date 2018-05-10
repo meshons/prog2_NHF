@@ -3,6 +3,7 @@
 #include "string.hpp"
 
 using namespace NHF;
+void Teszt_konstruktor();
 
 void Teszt_konstruktor() {
   try {
@@ -36,6 +37,13 @@ int main() {
     String s4 = "valami ";
     s4 = s4 + s4;
     std::cout << s4 << std ::endl;
+    s4.write(std::cout);
+    String::Iterator it = s2.end();
+    std::cout << *(it - (long long)80) << std::endl;
+    s2 += "valami";
+    s2 += 'c';
+    s2[10] = 'c';
+    std::cout << s2 << std::endl;
   } catch (const char *str) {
     std::cout << str << std::endl;
   }

@@ -3,7 +3,9 @@ Memoriaszivargas-detektor
 Keszitette: Peregi Tamas, BME IIT, 2011
             petamas@iit.bme.hu
 Kanari:     Szeberenyi Imre, 2013.
+VS 2012:    Szeberényi Imre, 2015.,
 mem_dump:   2016.
+meset felszabaditaskor: 2018.
 *********************************/
 
 /*definiealni kell, ha nem paracssorbol allitjuk be (-DMEMTRACE) */
@@ -40,7 +42,7 @@ mem_dump:   2016.
 /* Segedfuggvenyek es egyebek */
 /*******************************************************************/
 START_NAMESPACE
-    static FILE *fperror = stderr;
+    static FILE *fperror;
     #ifdef MEMTRACE_TO_MEMORY
     	static const unsigned int CANARY_LEN = 64;
     #else
@@ -123,37 +125,37 @@ START_NAMESPACE
 	}
 
 	/* memoriateruletet dump */
-	static void dump_memory(void const *mem, size_t size, size_t can_len) {
+	static void dump_memory(void const *mem, size_t size, size_t can_len, FILE* fp) {
 		unsigned char const *m=(unsigned char const *) mem;
 		unsigned int s, o;
 
         if (can_len > 0)
-            fprintf(fperror, "Dump (addr: %p kanari hossz: %d):\n", m+can_len, can_len);
+            fprintf(fp, "Dump (addr: %p kanari hossz: %d):\n", m+can_len, (int)can_len);
         else
-            fprintf(fperror, "Dump: (addr: %p) \n", m);
+            fprintf(fp, "Dump: (addr: %p) \n", m);
 		size += 2*can_len;
 		for (s = 0; s < (size+15)/16; s++) {
-			fprintf(fperror, "%04x:%c ", s*16, s*16 < can_len || s*16 >= size-can_len ? ' ' : '*');
+			fprintf(fp, "%04x:%c ", s*16, s*16 < can_len || s*16 >= size-can_len ? ' ' : '*');
 			for (o = 0; o < 16; o++) {
-				if (o == 8) fprintf(fperror, " ");
+				if (o == 8) fprintf(fp, " ");
 				if (s*16+o < size)
-					fprintf(fperror, "%02x ", m[s*16+o]);
+					fprintf(fp, "%02x ", m[s*16+o]);
 				else
-					fprintf(fperror, "   ");
+					fprintf(fp, "   ");
 			}
-			fprintf(fperror, " ");
+			fprintf(fp, " ");
 			for (o = 0; o < 16; o++) {
 				if (s*16+o < size)
-					fprintf(fperror, "%c", isprint(m[s*16+o]) ? m[s*16+o] : '.');
+					fprintf(fp, "%c", isprint(m[s*16+o]) ? m[s*16+o] : '.');
 				else
-					fprintf(fperror, " ");
+					fprintf(fp, " ");
 			}
-			fprintf(fperror, "\n");
+			fprintf(fp, "\n");
 		}
 	}
 
-	void mem_dump(void const *mem, size_t size) {
-	    dump_memory(mem, size, 0);
+	void mem_dump(void const *mem, size_t size, FILE* fp) {
+	    dump_memory(mem, size, 0, fp);
     }
 
 	static BOOL dying;
@@ -165,12 +167,12 @@ START_NAMESPACE
 		fprintf(fperror,"%s\n",msg);
 		if (p) {
 			fprintf(fperror, "\tPointer:\t%p", PU(p));
-			if (size) fprintf(fperror," (%u byte)", (unsigned)size);
+			if (size) fprintf(fperror," (%d byte)", (int)size);
 			fprintf(fperror,"\n");
 		}
 		if (a) print_call("\tFoglalas:\t", *a);
 		if (d) print_call("\tFelszabaditas:\t", *d);
-                if (p) dump_memory(p, size, CANARY_LEN);
+                if (p) dump_memory(p, size, CANARY_LEN, fperror);
 
 		dying = TRUE;
 		exit(120);
@@ -197,7 +199,7 @@ START_NAMESPACE
 	static void print_registry_item(registry_item * p) {
 		if (p) {
 			print_registry_item(p->next);
-			fprintf(fperror, "\t%p%5u byte ",p->p, (unsigned)p->size);
+			fprintf(fperror, "\t%p%5d byte ",p->p, (int)p->size);
 			print_call(NULL, p->call);
 			if(p->call.par_txt) free(p->call.par_txt);
 			if(p->call.file) free(p->call.file);
@@ -240,10 +242,15 @@ END_NAMESPACE
 /*******************************************************************/
 
 START_NAMESPACE
+	static int allocated_blks;
+
+    int allocated_blocks() { return allocated_blks; }
+
 	static BOOL register_memory(void * p, size_t size, call_t call) {
 		initialize();
+		allocated_blks++;
 		#ifdef MEMTRACE_TO_FILE
-			fprintf(trace_file, "%p\t%d\t%s%s", PU(p), size, pretty[call.f], call.par_txt ? call.par_txt : "?");
+			fprintf(trace_file, "%p\t%d\t%s%s", PU(p), (int)size, pretty[call.f], call.par_txt ? call.par_txt : "?");
 			if (call.f <= 3) fprintf(trace_file, ")");
 			fprintf(trace_file, "\t%d\t%s\n", call.line, call.file ? call.file : "?");
 			fflush(trace_file);
@@ -283,6 +290,7 @@ START_NAMESPACE
 		{ /*C-blokk*/
 			registry_item * n = find_registry_item(p);
 			if(n->next) {
+                allocated_blks--;
 				registry_item * r = n->next;
 				n->next = r->next;
 				if(COMP(r->call.f,call.f)) {
@@ -296,13 +304,15 @@ START_NAMESPACE
 					if(r->call.par_txt) free(r->call.par_txt);
 					if(call.file) free(call.file);
 					if(r->call.file) free(r->call.file);
+					memset(PU(r->p), 'f', r->size);
+					PU(r->p)[r->size-1] = 0;
 					free(r);
 				} else {
 					/*hibas felszabaditas*/
 					die("Hibas felszabaditas:",r->p,r->size,&r->call,&call);
 				}
 			} else {
-				die("Nem letezo adat felszabaditasa:", p, 0,NULL,&call);
+				die("Nem letezo, vagy mar felszabaditott adat felszabaditasa:", p, 0,NULL,&call);
 			}
 		} /*C-blokk*/
 		#endif
@@ -476,6 +486,17 @@ void operator delete(void * p) THROW_NOTHING {
 void operator delete[](void * p) THROW_NOTHING {
 	memtrace::traced_delete(p,FDELETEARR);
 }
+
+
+/* Visual C++ 2012 miatt kell, mert háklis, hogy nincs megfelelõ delete, bár senki sem használja */
+void operator delete(void * p, int, const char *) THROW_NOTHING {
+	memtrace::traced_delete(p,FDELETE);
+}
+
+void operator delete[](void * p, int, const char *) THROW_NOTHING {
+	memtrace::traced_delete(p,FDELETE);
+}
+
 #endif/*MEMTRACE_CPP*/
 
 /*******************************************************************/
@@ -509,6 +530,7 @@ START_NAMESPACE
 
 #if defined(MEMTRACE_TO_MEMORY) && defined(USE_ATEXIT_OBJECT)
     int atexit_class::counter = 0;
+    int atexit_class::err = 0;
 #endif
 END_NAMESPACE
 #endif

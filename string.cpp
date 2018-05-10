@@ -348,7 +348,7 @@ bool String::operator<(const String &s) const {
     return false;
   return true;
 }
-bool String::operator>(const String &s) const { return true; } // hibás
+bool String::operator>(const String &) const { return true; } // hibás
 bool String::operator<=(const String &s) const { return !(*this > s); }
 bool String::operator>=(const String &s) const { return !(*this < s); }
 
@@ -525,7 +525,7 @@ It It::operator+(size_t n) {
   Cell *tmp = cell;
   if (n != 0) {
     n += num;
-    while (n > 20)
+    while (n >= 20)
       if (tmp->next != NULL) {
         tmp = tmp->next;
         n -= 20;
@@ -541,7 +541,7 @@ It It::operator+(long long n) {
   if (n != 0) {
     if (n > 0) {
       n += num;
-      while (n > 20)
+      while (n >= 20)
         if (tmp->next != NULL) {
           tmp = tmp->next;
           n -= 20;
@@ -549,7 +549,7 @@ It It::operator+(long long n) {
           throw "túl a határon";
     } else {
       n -= num;
-      while (n > (long long)-20) //
+      while (n >= (long long)-20) //
         if (tmp->prev != NULL) {
           tmp = tmp->prev;
           n += 20;
@@ -565,7 +565,7 @@ It &It::operator+=(size_t n) {
   Cell *tmp = cell;
   if (n != 0) {
     n += num;
-    while (n > 20)
+    while (n >= 20)
       if (tmp->next != NULL) {
         tmp = tmp->next;
         n -= 20;
@@ -583,7 +583,7 @@ It &It::operator+=(long long n) {
   if (n != 0) {
     if (n > 0) {
       n += num;
-      while (n > 20)
+      while (n >= 20)
         if (tmp->next != NULL) {
           tmp = tmp->next;
           n -= 20;
@@ -591,7 +591,7 @@ It &It::operator+=(long long n) {
           throw "túl a határon";
     } else {
       n -= num;
-      while (n > -20)
+      while (n >= -20)
         if (tmp->prev != NULL) {
           tmp = tmp->prev;
           n += 20;
@@ -610,7 +610,7 @@ It It::operator-(size_t n) {
   Cell *tmp = cell;
   if (n != 0) {
     n -= num;
-    while (n > 20)
+    while (n >= 20)
       if (tmp->prev != NULL) {
         tmp = tmp->prev;
         n -= 20;
@@ -630,7 +630,7 @@ It &It::operator-=(size_t n) {
   Cell *tmp = cell;
   if (n != 0) {
     n -= num;
-    while (n > 20)
+    while (n >= 20)
       if (tmp->prev != NULL) {
         tmp = tmp->prev;
         n -= 20;
