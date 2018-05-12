@@ -1,6 +1,5 @@
 #include "string.hpp"
-
-namespace NHF {
+// namespace NHF {
 
 typedef String::Iterator It;
 
@@ -103,7 +102,7 @@ String::~String() {
 /*! @param os a kimeneti stream */
 void String::write(std::ostream &os) const {
   os << size() << ',';
-  const char *s = c_str();
+  char *s = c_str();
   if (std::streamsize(size()) < 0) {
     std::streamsize p = std::streamsize(size() - 9223372036854775807);
     os.write(s, 9223372036854775807);
@@ -111,7 +110,7 @@ void String::write(std::ostream &os) const {
   } else {
     os.write(s, std::streamsize(size()));
   }
-  delete s;
+  delete[] s;
   os.write("\n", 1);
 }
 /*! @param is a bemeneti stream */
@@ -135,24 +134,26 @@ void String::read(std::istream &is) {
 /*! @param s a másolandó String
     @return az objektum referenciája */
 String &String::operator=(const String &s) {
-  clear();
-  Cell *tmp, *c, *prev = NULL;
-  if (s.first != NULL) {
-    first = new Cell();
-    tmp = first;
-    copy(tmp->data, s.first->data);
-    tmp->prev = NULL;
-    tmp->next = NULL;
-    prev = tmp;
-    for (c = s.first->next; c != NULL; c = c->next) {
-      tmp->next = new Cell();
-      tmp = tmp->next;
-      copy(tmp->data, c->data);
-      tmp->prev = prev;
+  if (this != &s) {
+    clear();
+    Cell *tmp, *c, *prev = NULL;
+    if (s.first != NULL) {
+      first = new Cell();
+      tmp = first;
+      copy(tmp->data, s.first->data);
+      tmp->prev = NULL;
       tmp->next = NULL;
-    }
-  } else
-    first = NULL;
+      prev = tmp;
+      for (c = s.first->next; c != NULL; c = c->next) {
+        tmp->next = new Cell();
+        tmp = tmp->next;
+        copy(tmp->data, c->data);
+        tmp->prev = prev;
+        tmp->next = NULL;
+      }
+    } else
+      first = NULL;
+  }
   return *this;
 }
 /*! @param str a másolandó c szerű string
@@ -245,7 +246,7 @@ char &String::at(size_t n) { return begin().operator[](n); }
 const char &String::at(size_t n) const { return begin().operator[](n); }
 
 /*! @return konstant karaktersorozat a Stringből */
-const char *String::c_str() const {
+char *String::c_str() const {
   char *str = new char[size() + 1];
   int i = 0;
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next) {
@@ -272,6 +273,7 @@ String &String::operator+=(const String &s) {
       if (i1.lastInCell()) {
         tmp->next = new Cell();
         tmp->next->prev = tmp;
+        tmp->next->next = NULL;
         tmp = tmp->next;
         i1++;
       }
@@ -333,22 +335,47 @@ bool String::operator==(const String &s) const {
 bool String::operator!=(const String &s) const { return !(*this == s); }
 
 bool String::operator<(const String &s) const {
-  // hibás
-  if (s.size() == this->size()) {
-    size_t bl = s.size();
-    size_t eq = 0;
-    for (size_t i = 0; i < bl; i++)
-      if (this->operator[](i) == s[i])
-        eq++;
-      else if (this->operator[](i) > s[i])
-        return false;
-    if (eq == bl)
-      return false;
-  } else
+  if (*this == s)
     return false;
+  bool it = size() > s.size();
+  It it1 = it ? begin() : s.begin();
+  It it2 = it ? s.begin() : begin();
+  It it1e = it ? end() : s.end();
+  It it2e = it ? s.end() : end();
+  char c = *it2;
+  while (it1 != it1e) {
+    if ((it && *it1 > c) || (!it && *it1 < c))
+      return false;
+    if (it2 != it2e) {
+      it2++;
+      c = *it2;
+    } else
+      c = 0;
+    it1++;
+  }
   return true;
 }
-bool String::operator>(const String &) const { return true; } // hibás
+bool String::operator>(const String &) const {
+  if (*this == s)
+    return false;
+  bool it = size() > s.size();
+  It it1 = it ? begin() : s.begin();
+  It it2 = it ? s.begin() : begin();
+  It it1e = it ? end() : s.end();
+  It it2e = it ? s.end() : end();
+  char c = *it2;
+  while (it1 != it1e) {
+    if ((it && *it1 < c) || (!it && *it1 > c))
+      return false;
+    if (it2 != it2e) {
+      it2++;
+      c = *it2;
+    } else
+      c = 0;
+    it1++;
+  }
+  return true;
+} // hibás
 bool String::operator<=(const String &s) const { return !(*this > s); }
 bool String::operator>=(const String &s) const { return !(*this < s); }
 
@@ -703,4 +730,4 @@ bool It::operator>=(const Iterator &i) const { return !(*this < i); }
     @return az Iterátor másolata */
 It operator+(size_t n, It &i) { return i + n; }
 
-} // namespace NHF
+//} // namespace NHF

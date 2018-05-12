@@ -1,8 +1,9 @@
 #include <iostream>
 
+#include "memtrace.h"
 #include "string.hpp"
 
-using namespace NHF;
+// using namespace NHF;
 void Teszt_konstruktor();
 
 void Teszt_konstruktor() {
@@ -19,6 +20,7 @@ void Teszt_konstruktor() {
     std::cout << s4 << std::endl;
     std::cout << *s5 << std::endl;
     std::cout << s6 << std::endl;
+    delete s5;
   } catch (const char *s) {
     std::cout << s << std::endl;
   }
@@ -35,6 +37,7 @@ int main() {
     s2 += s2;
     std::cout << s2 << std::endl;
     String s4 = "valami ";
+    String s5 = "x";
     s4 = s4 + s4;
     std::cout << s4 << std ::endl;
     s4.write(std::cout);
@@ -44,6 +47,10 @@ int main() {
     s2 += 'c';
     s2[10] = 'c';
     std::cout << s2 << std::endl;
+    String s6;
+    s6.read(std::cin);
+    std::cout << s6 << std::endl;
+
   } catch (const char *str) {
     std::cout << str << std::endl;
   }

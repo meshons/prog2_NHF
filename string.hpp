@@ -11,7 +11,7 @@
 #include <new>
 
 //! PROG2 nagyházifeladat névtere
-namespace NHF {
+// namespace NHF {
 
 //! Általános osztály
 /*! Általános osztály, ami képes std::ostream-re kiírni
@@ -118,7 +118,7 @@ public:
   const char &at(size_t) const;
 
   //! a String c szerű stringé konvertálása, memóriát foglal!
-  const char *c_str() const; // lefoglal
+  char *c_str() const; // lefoglal
 
   //! összefűzés
   String &operator+=(const char *);
@@ -134,6 +134,8 @@ public:
   String operator+(const String &) const;
 
   // todo
+  //! összehasonlítás
+  /*!  */
   bool operator<(const String &) const;
   bool operator<=(const String &) const;
   bool operator>(const String &) const;
@@ -257,6 +259,6 @@ String::Iterator operator+(size_t, String::Iterator &);
 //! Az Iterátor növelése számmal
 String::Iterator operator+(long long, String::Iterator &);
 
-} // namespace NHF
+//} // namespace NHF
 
 #endif
