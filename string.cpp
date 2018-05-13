@@ -121,7 +121,7 @@ String::~String()
 /*! @param os a kimeneti stream */
 void String::write(std::ostream &os) const
 {
-  os << size() << ',';
+  os << size() << ';';
   char *s = c_str();
   if (std::streamsize(size()) < 0)
   {
@@ -233,7 +233,7 @@ String &String::operator=(char c)
 /*! @return size_t - a String-ben tárolt karakter sorozat hossza */
 size_t String::size() const
 {
-  size_t sum = 1;
+  size_t sum = 0;
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next)
   {
     size_t x = 0;
@@ -246,7 +246,7 @@ size_t String::size() const
 /*! @return size_t - a String-ben tárolt karakter sorozat hossza */
 size_t String::length() const
 {
-  size_t sum = 1;
+  size_t sum = 0;
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next)
   {
     size_t x = 0;
@@ -452,13 +452,37 @@ std::istream &operator>>(std::istream &is, String &s)
   char c;
   String s2;
   while (!isspace(c = char(is.get())))
-    s2 + c;
+    s2 += c;
   is.putback(c);
   s = s2;
   return is;
 }
 /*! @return Iterátor a kezdetére */
-It String::begin() const { return It(this, 0, first); }
+It String::begin()
+{
+  if (first == NULL)
+    first = new Cell();
+  return It(this, 0, first);
+}
+/*! @return Iterátor a vége után */
+It String::end()
+{
+  if (first == NULL)
+  {
+    first = new Cell();
+    return It(this, 0, first);
+  }
+  It a(this, 0, first);
+  while (a.val() != 0)
+    a++;
+  return a;
+}
+/*! @return Iterátor a kezdetére */
+It String::begin() const
+{
+
+  return It(this, 0, first);
+}
 /*! @return Iterátor a vége után */
 It String::end() const
 {
@@ -467,7 +491,6 @@ It String::end() const
     a++;
   return a;
 }
-
 /*! @param i a másolandó Iterátor
     @return az objektum referenciája */
 It &It::operator=(const It &i)

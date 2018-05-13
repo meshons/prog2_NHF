@@ -97,9 +97,40 @@ int main()
       TEST(Teszt4, stringlength)
   {
     NHF::String a("valami hosszu ami tobb mint 20 karakter, de tobb is mint 40 egy kicsivel");
-    EXPECT_EQ(size_t(73), a.size());
-    EXPECT_EQ(size_t(73), a.length());
+    EXPECT_EQ(size_t(72), a.size());
+    EXPECT_EQ(size_t(72), a.length());
     EXPECT_EQ(size_t(80), a.capacity());
+  }
+  ENDM
+
+      TEST(Teszt5, comperators)
+  {
+  }
+  ENDM
+
+      TEST(Teszt6, persistent)
+  {
+    std::stringstream ss;
+    NHF::String a("valami amiben van szokoz es hosszu, mondjuk 40 feletti");
+    a.write(ss);
+    EXPECT_STREQ("54;valami amiben van szokoz es hosszu, mondjuk 40 feletti\n", ss.str().c_str());
+    a.read(ss);
+    char *my = a.c_str();
+    EXPECT_STREQ("valami amiben van szokoz es hosszu, mondjuk 40 feletti", my);
+    delete[] my;
+  }
+  ENDM
+
+      TEST(Teszt7, iostream)
+  {
+    std::stringstream ss;
+    NHF::String a("valami amiben van szokoz");
+    ss << a;
+    EXPECT_STREQ("valami amiben van szokoz", ss.str().c_str());
+    ss >> a;
+    char *my = a.c_str();
+    EXPECT_STREQ("valami", my);
+    delete[] my;
   }
   ENDM
 

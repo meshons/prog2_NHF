@@ -95,6 +95,10 @@ public:
   String &operator=(char);
 
   //! Iterator a String kezdetére
+  Iterator begin();
+  //! Iterator a String vége után
+  Iterator end();
+  //! Iterator a String kezdetére
   Iterator begin() const;
   //! Iterator a String vége után
   Iterator end() const;
