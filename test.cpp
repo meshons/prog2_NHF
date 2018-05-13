@@ -144,9 +144,13 @@ int main()
     EXPECT_FALSE(b < a);
     EXPECT_TRUE(b >= a);
     EXPECT_FALSE(b <= a);
+    EXPECT_TRUE(a < b);
+    EXPECT_TRUE(b > a);
+    EXPECT_FALSE(a > b);
     b = "vacami";
     EXPECT_FALSE(a == b);
-    //maybe more
+    EXPECT_FALSE(a > a);
+    EXPECT_FALSE(a < a);
   }
   ENDM
 
@@ -194,6 +198,9 @@ int main()
     it i3(&a, 0);
     i3 = a.begin();
     EXPECT_EQ('v', i3.val());
+    NHF::String b;
+    it i4 = b.begin();
+    i4++;
   }
   ENDM
 
@@ -214,6 +221,8 @@ int main()
     NHF::String b("valami mas");
     EXPECT_ANY_THROW(a.begin() < b.end());
     EXPECT_ANY_THROW(a.begin() <= b.end());
+    EXPECT_ANY_THROW(a.begin() < b.begin() + (size_t)1);
+    EXPECT_TRUE(a.begin() < (a.begin() + size_t(2)));
   }
   ENDM
 
@@ -238,8 +247,26 @@ int main()
     i1 += (size_t)45;
     i1 -= (size_t)45;
     EXPECT_EQ('v', *(i1));
+    i1 += (size_t)99;
+    i1++;
+    it i2 = i1;
+    it i3 = i1;
+    EXPECT_ANY_THROW(++i2);
+    EXPECT_ANY_THROW(i3++);
+    EXPECT_EQ(0, i1.val());
+    EXPECT_ANY_THROW(*i1);
+    const it i4 = i1;
+    EXPECT_ANY_THROW(*i4);
+    it i5(i1), i6(i1), i7(i1), i8(i1), i9(i1), i10(i1), i11(i1), i12(i1);
+    EXPECT_ANY_THROW(i5 -= (size_t)1000);
+    EXPECT_ANY_THROW(i6 - size_t(1000));
+    EXPECT_ANY_THROW(i7 + (long long)(1000));
+    EXPECT_ANY_THROW(i8 + (long long)(-1000));
+    EXPECT_ANY_THROW(i9 += (size_t)1000);
+    EXPECT_ANY_THROW(i10 += (long long)1000);
+    EXPECT_ANY_THROW(i11 += (long long)-1000);
+    EXPECT_ANY_THROW(i12 + (size_t)(1000));
   }
-
   ENDM
 
       TEST(Teszt11, iteratoraccessingoperators)
@@ -260,6 +287,13 @@ int main()
     EXPECT_EQ('v', i2[(long long)0]);
     EXPECT_EQ('b', *i3);
     EXPECT_EQ('v', i3[(long long)-51]);
+    i1 += (size_t)8;
+    EXPECT_ANY_THROW(i3[(size_t)1000]);
+    EXPECT_ANY_THROW(i1[(size_t)1000]);
+    EXPECT_ANY_THROW(i3[(long long)1000]);
+    EXPECT_ANY_THROW(i1[(long long)1000]);
+    EXPECT_ANY_THROW(i3[(long long)-1000]);
+    EXPECT_ANY_THROW(i1[(long long)-1000]);
   }
   ENDM
 

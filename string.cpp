@@ -383,7 +383,8 @@ bool String::operator==(const String &s) const
 /*! @param s a vizsgálandó String
     @return hamis, ha megyezik, egyébként igaz */
 bool String::operator!=(const String &s) const { return !(*this == s); }
-
+/*! @param s a vizsgálandó String
+    @return igaz, ha minden helyiértékű karakter nagyobb értékű */
 bool String::operator<(const String &s) const
 {
   if (*this == s)
@@ -409,6 +410,8 @@ bool String::operator<(const String &s) const
   }
   return true;
 }
+/*! @param s a vizsgálandó String
+    @return igaz, ha minden helyiértékű karakter kisebb értékű */
 bool String::operator>(const String &s) const
 {
   if (*this == s)
@@ -433,8 +436,12 @@ bool String::operator>(const String &s) const
     it1++;
   }
   return true;
-} // hibás
+}
+/*! @param s a vizsgálandó String
+    @return igaz, ha minden helyiértékű karakter nagyobb vagy egyenlő értékű */
 bool String::operator<=(const String &s) const { return !(*this > s); }
+/*! @param s a vizsgálandó String
+    @return igaz, ha minden helyiértékű karakter kisebb vagy egyenlő értékű */
 bool String::operator>=(const String &s) const { return !(*this < s); }
 
 /*! @param is a stream amiről beolvasni szeretnénk
