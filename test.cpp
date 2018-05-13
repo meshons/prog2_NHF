@@ -7,7 +7,7 @@
 
 int main()
 {
-  TEST(Teszt1, konstruktor)
+  TEST(Teszt1, construktor)
   {
     char *my = NHF::String("valami").c_str();
     EXPECT_STREQ(std::string("valami").c_str(), my);
@@ -100,11 +100,25 @@ int main()
     EXPECT_EQ(size_t(72), a.size());
     EXPECT_EQ(size_t(72), a.length());
     EXPECT_EQ(size_t(80), a.capacity());
+    EXPECT_FALSE(a.empty());
+    a.clear();
+    EXPECT_TRUE(a.empty());
   }
   ENDM
 
       TEST(Teszt5, comperators)
   {
+    NHF::String a("valami");
+    NHF::String b("valami");
+    EXPECT_EQ(a, b);
+    b += 'c';
+    EXPECT_NE(a, b);
+    EXPECT_TRUE(a != b);
+    EXPECT_TRUE(b > a);
+    EXPECT_FALSE(b < a);
+    EXPECT_TRUE(b >= a);
+    EXPECT_FALSE(b <= a);
+    //maybe more
   }
   ENDM
 
@@ -131,6 +145,13 @@ int main()
     char *my = a.c_str();
     EXPECT_STREQ("valami", my);
     delete[] my;
+  }
+  ENDM
+
+      //iteratortests
+
+      TEST(Teszt8, iteratorconstructor)
+  {
   }
   ENDM
 
