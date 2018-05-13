@@ -308,7 +308,7 @@ String &String::operator+=(const String &s)
   It i2 = s.begin();
   It ie = s.end();
   Cell *tmp = i1.getCell();
-  if (tmp == NULL)
+  if (end() == begin())
   {
     *this = s;
   }

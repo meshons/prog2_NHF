@@ -235,6 +235,8 @@ int main()
     i1 -= (long long)25;
     i1 += (long long)45;
     i1 -= (long long)45;
+    i1 += (size_t)45;
+    i1 -= (size_t)45;
     EXPECT_EQ('v', *(i1));
   }
 
@@ -256,8 +258,8 @@ int main()
     EXPECT_EQ('m', i2[(size_t)31]);
     EXPECT_EQ('m', i2[(long long)31]);
     EXPECT_EQ('v', i2[(long long)0]);
-    EXPECT_EQ('v', *i2);
-    EXPECT_EQ('v', i1[(long long)-51]);
+    EXPECT_EQ('b', *i3);
+    EXPECT_EQ('v', i3[(long long)-51]);
   }
   ENDM
 

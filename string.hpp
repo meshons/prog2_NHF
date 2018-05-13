@@ -142,12 +142,13 @@ public:
   //! összefűzés
   String operator+(const String &) const;
 
-  // todo
   //! összehasonlítás
-  /*!  */
   bool operator<(const String &) const;
+  //! összehasonlítás
   bool operator<=(const String &) const;
+  //! összehasonlítás
   bool operator>(const String &) const;
+  //! összehasonlítás
   bool operator>=(const String &) const;
 
   //! két String megegyezik-e
@@ -208,7 +209,6 @@ public:
     //! Visszaadja az iterátor celláját
     /*! @return a cella pointere */
     Cell *getCell() { return cell; }
-    // todo int
 
     //! elem elérése az adott pozíciótól relatív távra
     char &operator[](size_t);
