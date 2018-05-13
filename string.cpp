@@ -356,11 +356,11 @@ String String::operator+(const char c) const { return String(*this) += c; }
 /*! @param c a hozzáfűzendő c szerű string
     @param s a String objektum
     @return az új összefűzött objektum */
-String operator+(const char *c, const String &s) { return s + c; }
+String operator+(const char *c, const String &s) { return String(c) + s; }
 /*! @param c a hozzáfűzendő karakter
     @param s a String objektum
     @return az új összefűzött objektum */
-String operator+(const char c, const String &s) { return s + c; }
+String operator+(const char c, const String &s) { return String(c) + s; }
 
 /*! @param os a stream amire kiírja
     @param s a kiírandó String
