@@ -3,11 +3,13 @@
 #include "memtrace.h"
 #include "string.hpp"
 
-// using namespace NHF;
+using namespace NHF;
 void Teszt_konstruktor();
 
-void Teszt_konstruktor() {
-  try {
+void Teszt_konstruktor()
+{
+  try
+  {
     String s1;
     String s2("val ami");
     String s3('c');
@@ -21,13 +23,17 @@ void Teszt_konstruktor() {
     std::cout << *s5 << std::endl;
     std::cout << s6 << std::endl;
     delete s5;
-  } catch (const char *s) {
+  }
+  catch (const char *s)
+  {
     std::cout << s << std::endl;
   }
 }
 
-int main() {
-  try {
+int main()
+{
+  try
+  {
     Teszt_konstruktor();
     String s2 = "20-nal nagyobb cuccot probalok beleírni nemtudom miert ";
     String s3 = "hazi 20nal nagyobb cuccal megy e roli kedveert";
@@ -50,8 +56,9 @@ int main() {
     String s6;
     s6.read(std::cin);
     std::cout << s6 << std::endl;
-
-  } catch (const char *str) {
+  }
+  catch (const char *str)
+  {
     std::cout << str << std::endl;
   }
   return 0;

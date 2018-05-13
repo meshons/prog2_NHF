@@ -11,12 +11,14 @@
 #include <new>
 
 //! PROG2 nagyházifeladat névtere
-// namespace NHF {
+namespace NHF
+{
 
 //! Általános osztály
 /*! Általános osztály, ami képes std::ostream-re kiírni
  illetve std::istream-ből beolvasni a származtatott osztályt */
-class Object {
+class Object
+{
 public:
   //! Virtuális destruktor
   /*! Virtuális destruktor, hogy a származottnak is lehessen saját destruktora
@@ -36,7 +38,8 @@ public:
 //! A String osztály
 /*! Az általános osztály származtatott String osztály, 20-as méretű char
     tömbökkel tárolva, saját Iterator-al és minél több értelmes művelettel */
-class String : public Object {
+class String : public Object
+{
 
 public:
   class Iterator;
@@ -44,7 +47,8 @@ public:
 private:
   //! Cella osztály
   /*! Kétirányű láncolt lista fix 20-as méretű char tömbök tárolására */
-  struct Cell {
+  struct Cell
+  {
     char data[20]; //!< 20-as méretű char tömb a tárolásra
     Cell *next;    //!< a következő cellára mutató pointer
     Cell *prev;    //!< az előző cellára mutató pointer
@@ -52,7 +56,8 @@ private:
     //! Explicit default konstruktor
     /*! Alapértelmezetten 0-ával tölti fel a data tömböt és
         NULL értéket állít a next és prev pointer-be */
-    Cell() {
+    Cell()
+    {
       for (int i = 0; i < 20; i++)
         data[i] = 0;
       next = NULL;
@@ -150,7 +155,8 @@ public:
   //! A String saját Iterátora
   /*! Saját Iterátor osztály, ami tárolja a String pointerét, az adott cellát és
    * pozíciót a cellában */
-  class Iterator {
+  class Iterator
+  {
     const String *parent; //!< az iterátor Stringjének pointere
     Cell *cell;           //!< az aktuális cellára mutató pointer
     size_t num;           //!< az aktuális pozíció
@@ -163,7 +169,8 @@ public:
        0
         @param c a cella, amitől számítja a pozíciót */
     Iterator(const String *s, size_t num2 = 0, Cell *c = NULL)
-        : parent(s), num(num2) {
+        : parent(s), num(num2)
+    {
       if (c == NULL)
         cell = s->first;
       else
@@ -259,6 +266,6 @@ String::Iterator operator+(size_t, String::Iterator &);
 //! Az Iterátor növelése számmal
 String::Iterator operator+(long long, String::Iterator &);
 
-//} // namespace NHF
+} // namespace NHF
 
 #endif

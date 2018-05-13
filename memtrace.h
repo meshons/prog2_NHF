@@ -61,39 +61,39 @@ inclue-ok:  2017., 2018.
 #endif
 
 #ifdef __cplusplus
-	#define START_NAMESPACE namespace memtrace {
-	#define END_NAMESPACE } /*namespace*/
-	#define TRACEC(func) memtrace::func
-	#include <new>
-#else
-	#define START_NAMESPACE
-	#define END_NAMESPACE
-	#define TRACEC(func) func
-#endif
-
-// THROW deklaráció változatai
-#if defined(_MSC_VER)
-  // VS rosszul kezeli az __cplusplus makrot
-  #if _MSC_VER < 1900
-    // * nem biztos, hogy jó így *
-	#define THROW_BADALLOC
+    #define START_NAMESPACE namespace memtrace {
+    #define END_NAMESPACE } /*namespace*/
+    #define TRACEC(func) memtrace::func
+    #include <new>
+    // THROW deklaráció változatai
+    #if defined(_MSC_VER)
+    // VS rosszul kezeli az __cplusplus makrot
+      #if _MSC_VER < 1900
+        // * nem biztos, hogy jó így *
+   	#define THROW_BADALLOC
 	#define THROW_NOTHING
-  #else
-    // C++11 vagy újabb
+      #else
+        // C++11 vagy újabb
 	#define THROW_BADALLOC noxcept(false)
 	#define THROW_NOTHING noexcept
-  #endif
-#else
-  #if __cplusplus < 201103L
+      #endif
+    #else
+      #if __cplusplus < 201103L
 	// C++2003 vagy régebbi
 	#define THROW_BADALLOC throw (std::bad_alloc)
 	#define THROW_NOTHING throw ()
-  #else
-    // C++11 vagy újabb
+      #else
+        // C++11 vagy újabb
 	#define THROW_BADALLOC noexcept(false)
 	#define THROW_NOTHING noexcept
-  #endif
+      #endif
+    #endif
+#else
+    #define START_NAMESPACE
+    #define END_NAMESPACE
+    #define TRACEC(func) func
 #endif
+
 
 START_NAMESPACE
 	int allocated_blocks();
@@ -149,7 +149,10 @@ END_NAMESPACE
 	#include <fstream>  // VS 2013 headerjében van deleted definició
 	#include <sstream>
 	#include <vector>
+	#include <list>
+	#include <map>
 	#include <algorithm>
+	#include <functional>
 #endif
 #ifdef MEMTRACE_CPP
 	namespace std {
