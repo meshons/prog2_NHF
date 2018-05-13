@@ -601,8 +601,12 @@ char &It::operator[](long long pos)
   }
   else if (pos < 0)
   {
-    pos += num;
     pos *= -1;
+    if (num > size_t(pos % 20))
+    {
+      tmp = tmp->prev;
+    }
+    pos -= num;
     while (pos >= 20)
       if (tmp->prev != NULL)
       {
@@ -610,7 +614,8 @@ char &It::operator[](long long pos)
         pos -= 20;
       }
       else
-        throw "nincs ilyen indexű elem";
+        throw "túl a határon";
+    pos = pos == 0 ? pos : 20 - pos;
   }
   else
     return tmp->data[num];
@@ -635,8 +640,12 @@ char It::operator[](long long pos) const
   }
   else if (pos < 0)
   {
-    pos += num;
     pos *= -1;
+    if (num > size_t(pos % 20))
+    {
+      tmp = tmp->prev;
+    }
+    pos -= num;
     while (pos >= 20)
       if (tmp->prev != NULL)
       {
@@ -644,7 +653,8 @@ char It::operator[](long long pos) const
         pos -= 20;
       }
       else
-        throw "nincs ilyen indexű elem";
+        throw "túl a határon";
+    pos = pos == 0 ? pos : 20 - pos;
   }
   else
     return tmp->data[num];
@@ -708,15 +718,21 @@ It It::operator+(long long n)
     }
     else
     {
+      n *= -1;
+      if (num > size_t(n % 20))
+      {
+        tmp = tmp->prev;
+      }
       n -= num;
-      while (n >= (long long)-20) //
+      while (n >= 20)
         if (tmp->prev != NULL)
         {
           tmp = tmp->prev;
-          n += 20;
+          n -= 20;
         }
         else
           throw "túl a határon";
+      n = n == 0 ? n : 20 - n;
     }
   }
   return It(parent, size_t(n), tmp);
@@ -763,15 +779,21 @@ It &It::operator+=(long long n)
     }
     else
     {
+      n *= -1;
+      if (num > size_t(n % 20))
+      {
+        tmp = tmp->prev;
+      }
       n -= num;
-      while (n >= -20)
+      while (n >= 20)
         if (tmp->prev != NULL)
         {
           tmp = tmp->prev;
-          n += 20;
+          n -= 20;
         }
         else
           throw "túl a határon";
+      n = n == 0 ? n : 20 - n;
     }
   }
   cell = tmp;
@@ -782,10 +804,13 @@ It &It::operator+=(long long n)
     @return az Iterátor másolata */
 It It::operator-(size_t n)
 {
-  // hibás
   Cell *tmp = cell;
   if (n != 0)
   {
+    if (num > n % 20)
+    {
+      tmp = tmp->prev;
+    }
     n -= num;
     while (n >= 20)
       if (tmp->prev != NULL)
@@ -795,6 +820,7 @@ It It::operator-(size_t n)
       }
       else
         throw "túl a határon";
+    n = n == 0 ? n : 20 - n;
   }
   return It(parent, n, tmp);
 }
@@ -810,6 +836,10 @@ It &It::operator-=(size_t n)
   Cell *tmp = cell;
   if (n != 0)
   {
+    if (num > n % 20)
+    {
+      tmp = tmp->prev;
+    }
     n -= num;
     while (n >= 20)
       if (tmp->prev != NULL)
@@ -819,6 +849,7 @@ It &It::operator-=(size_t n)
       }
       else
         throw "túl a határon";
+    n = n == 0 ? n : 20 - n;
   }
   cell = tmp;
   num = n;
@@ -828,30 +859,6 @@ It &It::operator-=(size_t n)
     @return az Iterátor referenciája */
 It &It::operator-=(long long n) { return *this += (-1) * n; }
 
-/*! @param i a kivont Iterátor
-    @return a távolságuk */
-size_t It::operator-(Iterator &i)
-{
-  size_t tav = 0;
-  if (*this != i)
-  {
-    if (*this < i)
-    {
-      for (Cell *tmp = cell; tmp != i.cell; cell = cell->next)
-        tav += 20;
-      tav += num;
-      tav -= i.num;
-    }
-    else
-    {
-      for (Cell *tmp = cell; tmp != i.cell; cell = cell->prev)
-        tav += 20;
-      tav -= num;
-      tav += i.num;
-    }
-  }
-  return tav;
-}
 /*! @param i az összehasonlítandó Iterátor
     @return igaz, ha i pozíciója nagyobb, hamis ha nem */
 bool It::operator<(const Iterator &i) const
@@ -892,5 +899,6 @@ bool It::operator>=(const Iterator &i) const { return !(*this < i); }
     @param i az Iterátor referenciája
     @return az Iterátor másolata */
 It operator+(size_t n, It &i) { return i + n; }
+It operator+(long long n, It &i) { return i + n; }
 
 } // namespace NHF

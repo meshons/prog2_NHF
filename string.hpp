@@ -234,8 +234,6 @@ public:
     Iterator operator-(size_t);
     //! Iterátor csökkentése megadott számmal
     Iterator operator-(long long);
-    //! Iterátorok különbségének abszolútértékének kiszámolása
-    size_t operator-(Iterator &);
     //! Iterátor csökkentése megadott számmal
     Iterator &operator-=(size_t);
     //! Iterátor csökkentése megadott számmal

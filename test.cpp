@@ -93,6 +93,10 @@ int main()
     my = a.c_str();
     EXPECT_STREQ("", my);
     delete[] my;
+    a += NHF::String("valami");
+    my = a.c_str();
+    EXPECT_STREQ("valami", my);
+    delete[] my;
   }
   ENDM
 
@@ -105,7 +109,8 @@ int main()
     a.at(24) = 'K';
     EXPECT_EQ('K', a[24]);
     EXPECT_EQ('c', a.at(28));
-    const char d = a.at(29);
+    const NHF::String c(a);
+    const char d = c.at(29);
     EXPECT_EQ('0', d);
     char *my = a.c_str();
     EXPECT_STREQ("valami hosszu ami tobb mKnt c0 karakter", my);
@@ -139,6 +144,8 @@ int main()
     EXPECT_FALSE(b < a);
     EXPECT_TRUE(b >= a);
     EXPECT_FALSE(b <= a);
+    b = "vacami";
+    EXPECT_FALSE(a == b);
     //maybe more
   }
   ENDM
@@ -184,11 +191,73 @@ int main()
     EXPECT_EQ('c', *i1);
     i1++;
     EXPECT_EQ('c', i1.val());
+    it i3(&a, 0);
+    i3 = a.begin();
+    EXPECT_EQ('v', i3.val());
   }
   ENDM
 
       TEST(Teszt9, iteratorcomparators)
   {
+    NHF::String a("valamihosszcucc ami tobb 20");
+    EXPECT_TRUE(a.begin() == a.begin());
+    EXPECT_FALSE(a.begin() == a.end());
+    EXPECT_TRUE(a.begin() ^ a.end());
+    EXPECT_TRUE(a.begin() < a.end());
+    EXPECT_FALSE(a.begin() > a.end());
+    EXPECT_TRUE(a.begin() <= a.end());
+    EXPECT_FALSE(a.begin() >= a.end());
+    EXPECT_FALSE(a.end() < a.begin());
+    EXPECT_TRUE(a.end() > a.begin());
+    EXPECT_FALSE(a.end() <= a.begin());
+    EXPECT_TRUE(a.end() >= a.begin());
+    NHF::String b("valami mas");
+    EXPECT_ANY_THROW(a.begin() < b.end());
+    EXPECT_ANY_THROW(a.begin() <= b.end());
+  }
+  ENDM
+
+      TEST(Teszt10, iteratorincreasingdecreasing)
+  {
+
+    NHF::String a("valamihosszcucc ami tobb 20 de meg annal is hosszabb hogy lehessen rajta mutogatni fancy cuccokat");
+    typedef NHF::String::Iterator it;
+    it i1 = a.begin();
+    EXPECT_EQ('m', *(i1 + size_t(31)));
+    EXPECT_EQ('m', *(size_t(31) + i1));
+    EXPECT_EQ('m', *(i1 + (long long)31));
+    EXPECT_EQ('m', *((long long)31 + i1));
+    i1 += (size_t)25;
+    i1 += (long long)26;
+    EXPECT_EQ('a', *(i1 - (size_t)48));
+    EXPECT_EQ('l', *(i1 - (long long)49));
+    i1 -= (size_t)26;
+    i1 -= (long long)25;
+    i1 += (long long)45;
+    i1 -= (long long)45;
+    EXPECT_EQ('v', *(i1));
+  }
+
+  ENDM
+
+      TEST(Teszt11, iteratoraccessingoperators)
+  {
+    NHF::String a("valamihosszcucc ami tobb 20 de meg annal is hosszabb hogy lehessen rajta mutogatni fancy cuccokat");
+    typedef NHF::String::Iterator it;
+    it i1 = a.begin();
+    EXPECT_EQ('m', i1[(size_t)31]);
+    EXPECT_EQ('m', i1[(long long)31]);
+    i1 += (size_t)51;
+    EXPECT_EQ('b', i1[(size_t)0]);
+    EXPECT_EQ('v', i1[(long long)-51]);
+    EXPECT_EQ('b', i1[(long long)0]);
+    const it i2 = a.begin();
+    const it i3 = i1;
+    EXPECT_EQ('m', i2[(size_t)31]);
+    EXPECT_EQ('m', i2[(long long)31]);
+    EXPECT_EQ('v', i2[(long long)0]);
+    EXPECT_EQ('v', *i2);
+    EXPECT_EQ('v', i1[(long long)-51]);
   }
   ENDM
 
