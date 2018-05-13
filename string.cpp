@@ -233,7 +233,7 @@ String &String::operator=(char c)
 /*! @return size_t - a String-ben tárolt karakter sorozat hossza */
 size_t String::size() const
 {
-  size_t sum = 0;
+  size_t sum = 1;
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next)
   {
     size_t x = 0;
@@ -246,7 +246,7 @@ size_t String::size() const
 /*! @return size_t - a String-ben tárolt karakter sorozat hossza */
 size_t String::length() const
 {
-  size_t sum = 0;
+  size_t sum = 1;
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next)
   {
     size_t x = 0;
