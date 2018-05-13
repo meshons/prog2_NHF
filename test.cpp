@@ -24,6 +24,19 @@ int main()
     my = b.c_str();
     EXPECT_STREQ(std::string("valami hosszu").c_str(), my);
     delete[] my;
+    NHF::String c("valami mas");
+    EXPECT_ANY_THROW(NHF::String(a.end(), a.begin()));
+    EXPECT_ANY_THROW(NHF::String(a.begin(), c.end()));
+    NHF::String d;
+    NHF::String e(d);
+    my = e.c_str();
+    EXPECT_STREQ("", my);
+    delete[] my;
+    NHF::String f("valami mas hogy nagyobb legyen a lefedettseg");
+    NHF::String g(f.begin(), f.end());
+    my = g.c_str();
+    EXPECT_STREQ("valami mas hogy nagyobb legyen a lefedettseg", my);
+    delete[] my;
   }
   ENDM
 
@@ -117,7 +130,9 @@ int main()
     NHF::String a("valami");
     NHF::String b("valami");
     EXPECT_EQ(a, b);
+    EXPECT_FALSE(a != b);
     b += 'c';
+    EXPECT_FALSE(a == b);
     EXPECT_NE(a, b);
     EXPECT_TRUE(a != b);
     EXPECT_TRUE(b > a);

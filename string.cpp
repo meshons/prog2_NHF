@@ -84,24 +84,27 @@ String::String(It begin, It end)
     throw "nem egy string-ben van a két Iterator";
   if (begin > end)
     throw "nem zárt intervallum";
-  Cell **tmp = &first, *prev = NULL;
-  unsigned int x = 0;
+  Cell *tmp = NULL, *prev = NULL;
+  size_t x = 0;
   while (begin != end)
   {
-    if (x % 20 == 0)
+    if (x % size_t(20) == size_t(0))
     {
-      if (!x)
+      if (x == size_t(0))
+      {
         first = new Cell();
+        tmp = first;
+      }
       else
       {
-        prev = (*tmp);
-        (*tmp)->next = new Cell();
-        (*tmp) = (*tmp)->next;
+        prev = (tmp);
+        (tmp)->next = new Cell();
+        (tmp) = (tmp)->next;
       }
-      (*tmp)->prev = prev;
-      (*tmp)->next = NULL;
+      (tmp)->prev = prev;
+      (tmp)->next = NULL;
     }
-    (*tmp)->data[x % 20] = *begin;
+    (tmp)->data[x % 20] = *begin;
     begin++;
     x++;
   }
