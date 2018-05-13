@@ -246,17 +246,7 @@ size_t String::size() const
 /*! @return size_t - a String-ben tárolt karakter sorozat hossza */
 size_t String::length() const
 {
-  size_t sum = 0;
-  for (Cell *tmp = first; tmp != NULL; tmp = tmp->next)
-  {
-    size_t x = 0;
-    while (tmp->data[x] && x < 20)
-      x++;
-    sum += x;
-    if (!tmp->data[x])
-      break;
-  }
-  return sum;
+  return size();
 }
 /*! @return size_t - a String jelenlegi maximális kapacitása */
 size_t String::capacity() const

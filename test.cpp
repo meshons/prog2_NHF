@@ -68,13 +68,17 @@ int main()
     my = a.c_str();
     EXPECT_STREQ("ami nem valami meg valami hahabamuhaha meg valami", my);
     delete[] my;
-    a = "valami";
+    a = "valamihosszabbmint20karakter";
     my = a.c_str();
-    EXPECT_STREQ("valami", my);
+    EXPECT_STREQ("valamihosszabbmint20karakter", my);
     delete[] my;
     a = 'c';
     my = a.c_str();
     EXPECT_STREQ("c", my);
+    delete[] my;
+    a = NHF::String();
+    my = a.c_str();
+    EXPECT_STREQ("", my);
     delete[] my;
   }
   ENDM
@@ -88,6 +92,8 @@ int main()
     a.at(24) = 'K';
     EXPECT_EQ('K', a[24]);
     EXPECT_EQ('c', a.at(28));
+    const char d = a.at(29);
+    EXPECT_EQ('0', d);
     char *my = a.c_str();
     EXPECT_STREQ("valami hosszu ami tobb mKnt c0 karakter", my);
     delete[] my;
@@ -148,9 +154,25 @@ int main()
   }
   ENDM
 
-      //iteratortests
+      TEST(Teszt8, iteratormainopearators)
+  {
+    NHF::String a("valami eleg hossz ahhoz hogy sok iteratoros cuccot mutogathassak rajta");
+    typedef NHF::String::Iterator it;
+    it i2 = a.begin();
+    it i1(i2);
+    EXPECT_EQ('v', *i1);
+    for (int i = 0; i < 36; i++)
+      i1++;
+    EXPECT_EQ('r', *i1);
+    for (int i = 0; i < 10; ++i)
+      i1++;
+    EXPECT_EQ('c', *i1);
+    i1++;
+    EXPECT_EQ('c', i1.val());
+  }
+  ENDM
 
-      TEST(Teszt8, iteratorconstructor)
+      TEST(Teszt9, iteratorcomparators)
   {
   }
   ENDM
