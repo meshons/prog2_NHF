@@ -240,7 +240,7 @@ size_t String::size() const
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next)
   {
     size_t x = 0;
-    while (tmp->data[x] && x < 20)
+    while (x < 20 && tmp->data[x])
       x++;
     sum += x;
   }
@@ -292,7 +292,7 @@ char *String::c_str() const
   for (Cell *tmp = first; tmp != NULL; tmp = tmp->next)
   {
     int x = 0;
-    while (tmp->data[x] && x < 20)
+    while (x < 20 && tmp->data[x])
       str[i++] = tmp->data[x++];
     if (x != 20 && !tmp->data[x])
       break;
